@@ -1,0 +1,47 @@
+@plugin "../plugin.js";
+// 主题颜色
+@themeColor: #05480a;
+
+// 基础转换的颜色
+@baseColor: #08469d;
+
+:root {
+  --color1: calcColor(@themeColor, @baseColor, @baseColor);
+  --color2: #fff;
+  --color3: calcColor(@themeColor, @baseColor, #2c6dbf);
+  --color5: calcColor(@themeColor, @baseColor, #3473c6);
+  --color9: calcColor(@themeColor, @baseColor, #1d60bc);
+  --color12: calcColor(@themeColor, @baseColor, #62a7ff);
+  --color13: calcColor(@themeColor, @baseColor, #4686da);
+  --color17: calcColor(@themeColor, @baseColor, #1c5cb0);
+  --color18: calcColor(@themeColor, @baseColor, #1453a8);
+  --color20: calcColor(@themeColor, @baseColor, #3e7dd6);
+  --color4: #d3df18;
+  --color6: #fbce19;
+  --color7: #ffffff;
+  --color14: #dd1c30;
+  --color19: #ff4026;
+  --color15: #82eb51;
+  --color16: #fdfd05;
+  --color8: linear-gradient(180deg, #e4ff6f 0%, #c7e448 8%, #899d32 100%);
+  --color11: linear-gradient(181deg, #ffd073 0%, #ff4026 100%);
+  --tabbar-bg: var(--color10);
+  // 签到卡片颜色
+  --sign-crad-color: linear-gradient(
+    180deg,
+    #adeaff 0%,
+    #86b8ff 6%,
+    #3760ff 92%,
+    #7490ff 100%
+  );
+  --sign-crad-active-color: linear-gradient(
+    180deg,
+    #feedcb 0%,
+    #f8b37a 6%,
+    #ff9137 92%,
+    #ffdf74 100%
+  );
+}
+:root {
+  --color10: linear-gradient(180deg, var(--color13) 0%, var(--color5) 100%);
+}

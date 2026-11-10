@@ -1,0 +1,49 @@
+// 对比css insert属性，做兼容
+.insert(@number) {
+  left: @number;
+  top: @number;
+  right: @number;
+  bottom: @number;
+}
+
+// 大小
+.size(@size) {
+  width: @size;
+  height: @size;
+}
+
+// flex内部居中
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 定位居中
+.position-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 字体颜色渐变
+.gradient-text(@color) {
+  background: @color;
+  -webkit-background-clip: text; /* 使用 -webkit-background-clip 实现将背景应用到文本上 */
+  background-clip: text; /* 标准语法 */
+  color: transparent; /* 设置文字颜色为透明，使得渐变能够显示在文字上 */
+}
+
+// 多行省略号
+.ellipsis-line(@line) {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @line; /* 设置要显示的行数 */
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

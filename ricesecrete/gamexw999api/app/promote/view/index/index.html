@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>{$web_name}代理后台</title>
+  {include file="public/header" /}
+</head>
+<style type="text/css">
+	.iframes{
+		width: 100%;
+		height: 100%;
+		border:0px;
+	}
+	.layui-tab-content .layui-show{
+		height: 100%;
+	}
+  .layui-nav-child>dd>a{
+    padding-left: 30px !important;
+  }
+</style>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin" id="apps">
+  <div class="layui-header">
+    <div class="layui-logo" @click="addLabel('{:url(\"/index/work\")}','{:lang('数据总览')}')" style="cursor: pointer;">{:lang('代理后台')}</div>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">{:lang('语言')}</a>
+        <dl class="layui-nav-child">
+          {volist name="$lang_list" id="vo"}
+              <dd><a href="javascript:;" @click="lang('{$vo}')">{$key}</a></dd>
+          {/volist}
+        </dl>
+      </li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="/static/admin/img/admin.png" class="layui-nav-img">
+          {:session('agentInfo.mail')}
+        </a>
+      </li>      
+      <li class="layui-nav-item"><a href="{:url('/login/outLogin')}">{:lang('退出')}</a></li>
+    </ul>
+  </div>
+  
+  <div class="layui-side">
+    <div class="layui-side-scroll">
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        
+        <!-- 风控仪表盘  -->
+        <li class="layui-nav-item" >
+          <a class="" href="javascript:;" >
+            <i class="layui-icon">&#xe653;</i>   
+            {:lang('数据总览')}
+          </a>
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/index/work\")}','{:lang('数据总览')}')">{:lang('数据总览')}</a>
+              <a href="javascript:;" @click="addLabel('{:url(\"/user/my\")}','{:lang('个人中心')}')">{:lang('个人中心')}</a>
+            </dd>
+          </dl>
+        </li>
+
+        <!-- 游戏管理  -->
+<!--        <li class="layui-nav-item">-->
+<!--          <a class="" href="javascript:;">-->
+<!--            <i class="layui-icon">&#xe653;</i>-->
+<!--            {:lang('游戏管理')}-->
+<!--          </a>-->
+
+<!--          <dl class="layui-nav-child">-->
+<!--            <dd>-->
+<!--              <a href="javascript:;" @click="addLabel('{:url(\"/liansai_zhudan/lists\")}','{:lang('注单管理')}')">{:lang('注单管理')}</a>-->
+<!--            </dd>-->
+<!--          </dl>-->
+
+<!--        </li>-->
+
+
+        <!-- 三方游戏  -->
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">
+            <i class="layui-icon">&#xe653;</i>   
+            {:lang('三方游戏')}
+          </a>
+            
+
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/game/report")}','{:lang('游戏报表')}')">{:lang('游戏报表')}</a>
+            </dd>
+          </dl>
+
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/game_bets/list\")}','{:lang('游戏记录')}')">{:lang('游戏记录')}</a>
+            </dd>
+          </dl>
+
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/game/user_report\")}','{:lang('用户日报表')}')">{:lang('用户日报表')}</a>
+            </dd>
+          </dl>
+                    
+        </li>        
+        
+        <!-- 出入金管理  -->
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">
+            <i class="layui-icon">&#xe653;</i>   
+            {:lang('充值提现')}
+          </a>
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/user_offline/list\")}','{:lang('会员充值')}')">{:lang('会员充值')}</a>
+            </dd>
+          </dl>
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/user_withdrawal/list\")}','{:lang('会员提现')}')">{:lang('会员提现')}</a>
+            </dd>
+          </dl>
+        </li>        
+
+        <!-- 报表管理  -->
+        <!--li class="layui-nav-item">
+          <a class="" href="javascript:;">
+            <i class="layui-icon">&#xe653;</i>   
+            {:lang('报表管理')}
+          </a>
+          
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/report/index\")}','{:lang('运营总表')}')">{:lang('运营总表')}</a>
+            </dd>
+          </dl>
+          
+            <dl class="layui-nav-child">
+                <dd>
+                    <a href="javascript:;" @click="addLabel('{:url(\"/report/user\")}','{:lang('用户输赢')}')">{:lang('用户输赢')}</a>
+                </dd>
+            </dl>
+            <dl class="layui-nav-child">
+              <dd>
+                <a href="javascript:;" @click="addLabel('{:url(\"/user_offline/leaderboard\")}','{:lang('充值排行榜')}')">{:lang('充值排行榜')}</a>
+              </dd>
+            </dl>
+            <dl class="layui-nav-child">
+              <dd>
+                <a href="javascript:;" @click="addLabel('{:url(\"/user_withdrawal/leaderboard\")}','{:lang('提现排行榜')}')">{:lang('提现排行榜')}</a>
+              </dd>
+            </dl>
+          
+        </li-->
+
+        <!-- 微商管理  -->
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">
+            <i class="layui-icon">&#xe653;</i>   
+            {:lang('微商报表')}
+          </a>
+          
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/agent_report/user\")}','{:lang('微商报表')}')">{:lang('微商报表')}</a>
+            </dd>
+          </dl>
+          
+        </li>
+
+
+        <!-- 账号管理 -->
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">
+            <i class="layui-icon">&#xe653;</i>   
+            {:lang('会员管理')}
+          </a>
+          <dl class="layui-nav-child">
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/user/list\")}','{:lang('会员管理')}')">{:lang('会员管理')}</a>
+            </dd>
+            <dd>
+              <a href="javascript:;" @click="addLabel('{:url(\"/user_agent/list\")}','{:lang('代理管理')}')">{:lang('代理管理')}</a>
+            </dd>
+          </dl>          
+        </li>
+        
+        
+        
+
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="height: 100%;">
+		<div class="layui-tab" lay-filter="demo" lay-allowclose="true" style="height: 100%;margin: 0;">
+		  <ul class="layui-tab-title">
+		    <!-- <li class="layui-this" lay-id="0">工作台</li> -->
+		  </ul>
+		  <div class="layui-tab-content" style="height: 100%;">
+		    <!-- <div class="layui-tab-item layui-show">内容1</div> -->
+		  </div>
+		</div>
+    </div>
+  </div>
+</div>
+{include file="public/botton" /}
+<script>
+//未登录
+function admin_not_login(){
+    location.href="{:url('/login')}";
+}
+    var vm = new Vue({
+        el: '#apps',
+        data: {
+            active:null,
+            $:null,
+            element:null,
+            isLoadArr:[],//已加载页面
+            headData:{},
+        },
+        mounted(){
+            this.init();
+            var _this = this;
+        },
+        methods: {
+          init: function() {
+            //初始化
+            var _this = this;
+            layui.use('element', function(){
+                _this.$ = layui.jquery,
+                _this.element = layui.element;
+              _this.$(".layui-tab").on("click",function(e){
+                  //删除
+                  if(_this.$(e.target).is(".layui-tab-close")){
+                      var index = _this.isLoadArr.indexOf(_this.$(e.target).parent().attr("lay-id")); 
+                      if (index > -1) { 
+                        _this.isLoadArr.splice(index, 1); 
+                      }
+                  } 
+              })
+                //触发事件
+                _this.addLabel('{:url("/index/work")}',"{:lang('数据总览')}");//初始化
+            });
+        },
+        addLabel:function(url,title){
+            //添加标签
+            var is_load=false;//是否已经加载
+            for (var i = 0; i<this.isLoadArr.length; i++) {
+                if (this.isLoadArr[i]==url) {
+                  is_load=true;
+                }
+            }
+            if (!is_load) {
+              this.element.tabAdd('demo', {
+                title: title
+                ,content: '<iframe class="iframes" src="'+url+'"></iframe>'
+                ,id: url
+              });
+              this.isLoadArr.push(url);
+            }
+            this.element.tabChange('demo',url);
+            
+        },
+        lang(lang){
+          adminRequest('{:url("/login/lang_select")}',{lang:lang}).then(function (response) {
+                if (response.data.code==1) {
+                  location.reload();
+                }
+          });
+        },
+      }
+    })
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+
+
+<div style="text-align: right;">
+	<button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+	  <i class="layui-icon">&#xe9aa;</i>
+	</button>	
+</div>
+<div class="demoTable" style="text-align: center;">
+<form class="layui-form" id="excel" action="/game/user_report_excel">
+    <div class="layui-inline">
+        <input class="layui-input" id="username" name="username" placeholder="{:lang('请输入用户ID/用户名')}">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" id="date" name="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">
+    </div>
+    <button class="layui-btn"  data-type="reload" type="button">{:lang('搜索')}</button>
+  </form>
+</div>
+<hr>
+<table class="layui-hide" id="table" lay-filter="table"></table>
+                
+{include file="public/botton" /}
+<script>
+layui.use('table', function(){
+    var table = layui.table;
+    table.render({
+  	elem: '#table',
+        url:'/game/user_report?select=true',
+  	response:{
+	    statusCode: 1 //规定成功的状态码，默认：0
+	},
+	page: true,
+        cols: [[
+            {field:"username", title: "{:lang('用户')}", templet:function(d){
+                return '<a style="color: #1E9FFF;" lay-event="base">'+d.username+'</a>'
+            }},
+            {field:"su_dt", title: "{:lang('日期')}",},
+            {field:"su_betnum", title: "{:lang('投注数量')}"},
+            {field:"su_bet", title: "{:lang('投注金额')}"},
+            {field:"su_losenum", title: "{:lang('输次数')}"},
+            {field:"su_lose", title: "{:lang('输金额')}"},
+            {field:"su_winnum", title: "{:lang('赢次数')}"},
+            {field:"su_win", title: "{:lang('赢金额')}"},
+            {field:"su_drawnum", title: "{:lang('平次数')}"},
+            {field:"su_draw", title: "{:lang('平金额')}"},
+        ]],
+        done: function (res, curr, count) {
+        currpage = curr;
+        //初始化高度，使得冻结行表体高度一致
+        $(".layui-table-body tr").each(function (index, val) {
+            $($(".layui-table-fixed .layui-table-body table tr")[index]).height($(val).height());
+        });
+    }
+    });
+
+  //监听工具条
+  table.on('tool(table)', function(obj){
+    var data = obj.data;
+    var url="";
+    var title = "";
+    
+    if(obj.event == 'base'){
+        title = "{:lang('用户资料')}";
+        url='/user/base?id='+data.su_uid;
+    }
+    
+    layer.open({
+        type: 2,
+        title: title,
+        shadeClose: true,
+        shade: 0.8,
+        area: ['90%', '90%'],
+        content: url //iframe的url
+    });
+  });
+  
+  var $ = layui.$, active = {
+    reload: function(){
+      var date = $('#date').val();
+        layui.use('table', function() {
+            var table = layui.table;
+            var username = $('#username').val();
+            var agent_name = $('#agent_name').val();
+            var date = $('#date').val();
+            table.reload('table', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    username: username,
+                    agent_name: agent_name,
+                    date:date,
+                }
+            }, 'data');
+        })
+    }
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+
+laydate.render({
+    elem: '#date',
+    type: 'date',
+    range: true,
+    lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',},
+    extrabtns: [
+        {id: 'today', text: '{:lang('今天')}', range: [new Date(), new Date()]},
+        {id: 'yesterday', text: '{:lang('昨天')}', range: [new Date(new Date().setDate(new Date().getDate()-1)), new Date(new Date().setDate(new Date().getDate()-1))]},
+        {id: 'lastday-7', text: '{:lang('近7天')}', range: [new Date(new Date().setDate(new Date().getDate()-7)), new Date(new Date().setDate(new Date().getDate()-1))]},
+        {id: 'lastday-30', text: '{:lang('近30天')}', range: [new Date(new Date().setDate(new Date().getDate()-30)), new Date(new Date().setDate(new Date().getDate()-1))]},
+        {id: 'thismonth', text: '{:lang('本月')}', range: [new Date(new Date().setDate(1)),new Date(new Date(new Date().setMonth(new Date().getMonth()+1)).setDate(0))]},
+        {id: 'lastmonth', text: '{:lang('上月')}', range: [new Date(new Date(new Date().setMonth(new Date().getMonth()-1)).setDate(1)),new Date(new Date().setDate(0))]}
+    ],
+    done: function(val, stdate, ovdate){
+        //当确认选择时间后调用这里
+    }
+});
+</script>
+
+</body>
+</html>

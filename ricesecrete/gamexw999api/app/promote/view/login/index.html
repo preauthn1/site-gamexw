@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{:lang('代理登录')}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/admin/css/login.css">
+    {include file="public/header" /}
+    <style>
+        .layui-input{
+            background-color:#03122b;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div class="login_bg" id="apps">
+    <div class="bg_body">
+        <div class="bg_body_left">
+            <div class="auth-image-content-container">
+                <div class="bg_title">FIFA</div>
+                <div>
+                    <div class="bg_title2">
+                        <p>The home of
+                        <p>everything
+                        <p>football.
+                    </div>
+                    <div class="bg_title3">
+                        <p>Sign up to access our original shows,
+                        <p> documentaries, and the greatest football
+                        <p>archive ever.The Happiest Man in the World
+                        <p>Only available on FIFA+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg_body_right">
+            <div class="auth-content">
+                <div class="auth-content-form-title">
+                    <h1>{:lang('代理登录')}</h1>
+
+                    <!--<div class="check_lang layui-form">-->
+                    <!--<select name="lang"  lay-filter="lang">-->
+                    <!--<option value="" >{:lang('切换语言')}</option>-->
+                    <!--{volist name="$lang_list" id="vo"}-->
+                    <!--<option value="{$vo}" {$lang == $vo ? 'selected' : ''}>{$key}</option>-->
+                    <!--{/volist}-->
+                    <!--</select>-->
+                    <!--</div>-->
+                </div>
+                <form id="" class="form">
+
+                    <div class="auth-content-form-field">
+                        <label class="form_title">{:lang('账号')}</label>
+                        <input v-model="info.username" name="username" type="text" class="input" @blur="show('username_status')">
+                        <div class="inputErrorMsgContainer username_status">
+                            <div class="inputErrorMsg" >{:lang('账号不能为空')}</div>
+                        </div>
+                    </div>
+
+                    <div class="auth-content-form-field auth-top">
+                        <label class="form_title">{:lang('密码')}</label>
+                        <input v-model="info.password" name="password" :type="password_show" class="input" @blur="show('password_status')">
+                        <img class="password_ico" :src="password_img" @click="password_type">
+                        <div class="inputErrorMsgContainer password_status">
+                            <div class="inputErrorMsg" >{:lang('密码不能为空')}</div>
+                        </div>
+                    </div>
+                    <div class="auth-content-form-field auth-top">
+                        <label class="form_title">{:lang('验证码')}</label>
+                        <input v-model="info.code" name="code" type="text" class="input" style="width: 79%" @blur="show('code_status')">
+                        <div class="my_img"><img :src="captche"></div>
+                        <img class="yzm_ico" src="/static/admin/img/c_5.png"  @click="getCaptche">
+                        <div class="inputErrorMsgContainer code_status">
+                            <div class="inputErrorMsg" >{:lang('验证码不能为空')}</div>
+                        </div>
+                    </div>
+                    <div class="auth-content-form-field auth-top">
+                        <label class="form_title">{:lang('谷歌验证码')} ({:lang('未绑定不填')})</label>
+                        <input v-model="info.google_code" name="google_code"  type="text" class="input" >
+                    </div>
+                    <div class="auth-btn-container auth-btn-submit">
+                        <button class="btn btn-primary btn-margin-top" type="button" @click="submitData">
+                            {:lang('登录')}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="public/botton" /}
+<script>
+    var vm = new Vue({
+        el: '#apps',
+        data: {
+            info:{
+                username:"",
+                password:"",
+                google_code:'',
+                code:"",
+            },
+            password_show:'password',
+            password_img:'/static/admin/img/hide.svg',
+            form:null,
+            $:null,
+            captche:"{:url('/login/captcha')}"
+        },
+        mounted(){
+            this.init();
+        },
+        methods: {
+            init: function() {
+                var _this=this;
+                layui.use(['form'], function(){
+                    _this.form = layui.form;
+                    _this.$=layui.$;
+                    _this.$('#lang').find("option[value='{$lang}']").attr("selected",true);
+                    //更新全部
+                    _this.form.render();
+                    _this.form.on('select(lang)', function (data) {
+                        var lang=_this.$("select[name=lang").val();
+                        _this.select_lang(lang);
+                    });
+                });
+            },
+            select_lang(lang){
+                adminRequest('{:url("/login/lang_select")}',{lang:lang}).then(function (response) {
+                    if (response.data.code==1) {
+                        location.reload();
+                    }
+                });
+            },
+            getCaptche:function(){
+                this.captche='{:url("/login/captcha")}?id='+Math.random();
+            },
+            submitData:function(){
+                //提交
+                var _this=this;
+                if(_this.info.username == ""){
+                    _this.show('username_status');return false;
+                }else if(_this.info.password == ""){
+                    _this.show('password_status');return false;
+                }else if(this.info.code == "") {
+                    _this.show('code_status');return false;
+                }
+                adminRequest('{:url("/login/loginCheck")}',{info:this.info}).then(function (response) {
+                    layer.msg(response.data.msg,{
+                        time:1500
+                    },function(){
+                        if (response.data.code==1){
+                            location.href="/";
+                        }else{
+                            _this.getCaptche();
+                        }
+                    });
+                });
+            },
+            show(state){
+                var obj
+                if(state == 'username_status'){
+                    obj = this.info.username
+                }else if(state == 'password_status'){
+                    obj = this.info.password
+                }else{
+                    obj = this.info.code
+                }
+                if(obj == ""){
+                    $('.'+state).slideDown(200)
+                }else{
+                    $('.'+state).slideUp(200)
+                }
+            },
+            password_type(){
+                if(this.password_show == 'password'){
+                    this.password_show = 'text';
+                    this.password_img = '/static/admin/img/show.svg';
+                }else{
+                    this.password_show = 'password';
+                    this.password_img = '/static/admin/img/hide.svg';
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

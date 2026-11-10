@@ -1,0 +1,97 @@
+.page-box {
+  padding: 23px 0 42px;
+  .md({
+    padding: 0;
+    
+  });
+}
+.nav-bar {
+  margin-bottom: 15px;
+}
+.user-box {
+  min-height: 100px;
+  background-color: var(--color1);
+  border-radius: 5px;
+  padding: 16px 22px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  .md({
+    border-radius: 0;
+    padding: 32px 30px 25px;
+  });
+}
+
+.id-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 18px;
+  &:last-child {
+    margin-bottom: 0;
+    font-size: 20px;
+  }
+  .id {
+    margin: 0 12px;
+    color: var(--color7);
+  }
+}
+.copy-icon {
+  cursor: pointer;
+}
+.collectable-warp {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  .md({
+    flex-direction: column;
+    align-items: flex-start;
+  });
+}
+.collectable-box {
+  flex: 1;
+  margin: 0 10px;
+  text-align: center;
+  font-size: 18px;
+  .md({
+    margin: 0;
+    margin-top: 10px;
+  font-size: 20px;
+  });
+}
+.collectable-num {
+  margin-left: 8px;
+  color: var(--color6);
+}
+
+.tabs {
+  --van-tabs-line-height: 70px;
+  border-bottom: 1px solid var(--color3);
+  --van-tab-font-size: 20px;
+  :deep(.van-tabs__line) {
+    --van-tabs-bottom-bar-width: 90px;
+  }
+  :deep(.van-tabs__wrap) {
+    background-color: var(--color1);
+    padding: 0 20px;
+  }
+  :deep(.van-tab) {
+    margin-left: 20px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+.btn-list {
+  .md({
+    display: flex;
+    flex-direction: column;
+    .btn {
+      margin: 0;
+      margin-bottom: 10px;
+      &:last-child {
+        margin: 0;
+      }
+    }
+ });
+}

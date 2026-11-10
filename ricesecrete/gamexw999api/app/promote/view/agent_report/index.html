@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+{if $selected == 0}
+<div class="layui-tab">
+    <ul class="layui-tab-title">
+        <li class="layui-this">{:lang('代理报表')}</li>
+        <li onclick="window.location.href = '/agent_report/user';">{:lang('下层充提报表')}</li>
+        <li onclick="window.location.href = '/agent_report/userzhudan';">{:lang('下层注单列表')}</li>
+        <li onclick="window.location.href = '/agent_report/usergiving';">{:lang('下层彩金报表')}</li>
+        <li style="float: right; text-align: right;">
+            <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+              <i class="layui-icon">&#xe9aa;</i>
+            </button>	
+        </li>
+    </ul>
+</div>
+{/if}
+<hr>
+<div class="demoTable" style="text-align: center;">
+  <div class="layui-inline">
+    <input class="layui-input" id="username" placeholder="{:lang('用户名')}">
+  </div>
+<div class="layui-inline">
+    <input class="layui-input" id="rec_code" placeholder="{:lang('推广码')}">
+  </div>
+  <button class="layui-btn" data-type="reload">{:lang('搜索')}</button>
+</div>
+<hr>
+<table class="layui-hide" id="table" lay-filter="table"></table>
+ 
+<script type="text/html" id="bar">
+    {if $selected}
+        <a class="layui-btn layui-btn-xs" lay-event="selected">{:lang('选择当前账号')}</a>
+    {else}
+        <a class="layui-btn layui-btn-xs" lay-event="show">{:lang('查看')}</a>
+    {/if}    
+</script>
+
+
+{include file="public/botton" /}
+<script>
+layui.use('table', function(){
+  var table = layui.table;
+  table.render({
+  	elem: '#table',
+        url:'/agent_report/index?select=true&id={$id}',
+  	response:{
+	    statusCode: 1 //规定成功的状态码，默认：0
+	},
+  text: {
+        none: '{:lang('暂无数据')}' //默认：无数据。
+    },
+	page: true,
+limits:[10,20,30,40,50,60,70,80,90,500,1000],
+        cols: [[
+            {field:"username", title: "{:lang('用户名')}", templet:function(d){
+                return '<a style="color: #1E9FFF;" lay-event="base">'+d.username+'</a>'
+            }},
+            {field:"rec_code", title: "{:lang('推广码')}"},
+            {field:"count_pnumber", title: "{:lang('下级总人数')}"},
+            {field:"new_reg", title: "{:lang('新注册人数')}"},
+            {title: "{:lang('操作')}", align:'center', toolbar: '#bar'}
+        ]]
+  });
+
+  //监听工具条
+  table.on('tool(table)', function(obj){
+    var data = obj.data;
+    var url="";
+    if(obj.event == 'selected'){
+        window.parent.vm.close_user(data);return;
+    }
+    if(obj.event == 'show'){
+    	url='/agent_report/index?id='+data.uid;
+        window.location.href = url;
+    }
+    
+    if(obj.event == 'base'){
+      url='/user/base?id='+data.uid;
+      layer.open({
+          type: 2,
+          title: "{:lang('编辑')}",
+          shadeClose: true,
+          shade: 0.8,
+          area: ['90%', '90%'],
+          content: url //iframe的url
+      });
+    }
+    
+  });
+  
+  var $ = layui.$, active = {
+  	excel: function(){
+	    //添加
+	      layer.open({
+	        type: 2,
+	        title: "{:lang('汇出')}",
+	        shadeClose: true,
+	        shade: 0.8,
+	        area: ['90%', '90%'],
+	        content: '/agent_list/excel' //iframe的url
+	      });
+	},
+    reload: function(){
+      var username = $('#username').val();
+      var rec_code = $('#rec_code').val();
+      //执行重载
+      table.reload('table', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        },
+        where: {
+          username: username,
+          rec_code:rec_code
+        }
+      }, 'data');
+    }
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+
+
+<div style="text-align: right;">
+  <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+    <i class="layui-icon">&#xe9aa;</i>
+  </button> 
+</div>
+
+<hr>
+
+<div class="demoTable" style="text-align: center;">
+    <form class="layui-form" >
+    <div class="layui-inline">
+      <input class="layui-input" id="username" placeholder="{:lang('精准：')}{:lang('id')}/{:lang('推广码')}/{:lang('用户名')}">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" id="name" placeholder="{:lang('模糊：')}{:lang('用户名')}/{:lang('手机号')}/{:lang('邮箱')}">
+    </div>
+    <div class="layui-inline">
+      <input class="layui-input" id="rec_id" placeholder="{:lang('代理id')}/{:lang('推广码')}/{:lang('用户名')}">
+    </div>
+    <div class="layui-inline">
+        <select id="lebals" name="lebals" class="inline">
+            <option value=""  selected="">{:lang('用户标签')}</option>
+            <option value="1">{:lang('一般用户')}</option>
+            <option value="2">{:lang('测试用户')}</option>
+        </select>
+    </div>
+    <div class="layui-inline">
+        <select id="logins" name="logins" class="inline">
+            <option value=""  selected="">{:lang('所有用户')}</option>
+            <option value="2">{:lang('二天前登录')}</option>
+            <option value="7">{:lang('七天前登录')}</option>
+            <option value="15">{:lang('半月前登录')}</option>
+        </select>
+    </div>
+  <div class="layui-inline">
+    <input class="layui-input" id="end_login_ip" placeholder="{:lang('登录')}/{:lang('注册ip')}">
+  </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="login_time" id="login_time" placeholder="{:lang('注册时间')}">
+    </div>
+  <button class="layui-btn" data-type="reload" type="button">{:lang('搜索')}</button>
+    </form>
+</div>
+
+<hr>
+<div class="layui-btn-group demoTable">
+  <button class="layui-btn " data-type="add">{:lang('添加')}</button>
+</div>
+<table class="layui-hide" id="table" lay-filter="table"></table>
+ 
+<script type="text/html" id="bar">
+  <a class="layui-btn layui-btn-xs" lay-event="base">{:lang('资料')}</a>
+</script>
+
+<script type="text/html" id="status">
+  {{# if (d.status == 1) { }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" >{:lang('启用')}</a>
+  {{# } else { }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger" >{:lang('禁用')}</a>
+  {{# } }}
+</script>
+
+{include file="public/botton" /}
+<script>
+layui.use(['table','form'], function(){
+  var table = layui.table;
+  var form = layui.form;
+  table.render({
+    elem: '#table',
+    autoSort:false,
+    url:'/user/list?select=true&ip='+"{$ip}",
+    response:{
+      statusCode: 1 //规定成功的状态码，默认：0
+  },
+  text: {
+            none: '{:lang('暂无数据')}' //默认：无数据。
+        },
+  parseData: function(res){ //res 即为原始返回的数据
+      return {
+        "code": res.code, //解析接口状态
+        "msg": res.msg, //解析提示文本
+        "count": res.data.total, //解析数据长度
+        "data": res.data.data //解析数据列表
+      };
+  },
+    page: true,
+    limits:[10,20,30,40,50],
+    cols: [[
+        {field:"id", title: "ID", sort:true},
+        {field:"username", title: "{:lang('用户名')}",templet:function(d){
+            let str = `<div style = "text-align:left">`+d.username
+            if (d.phone != '') {
+                str += `<br><span style="color:red">手机：`+d.phone+`(${d.qh})</span>`
+            }
+            if (d.mail != '') {
+                str += `<br><span style="color:red">邮箱：`+d.mail+`</span>`
+            }
+            str += `</div>`
+            return str
+        },width:200},
+      {field:"lebal", title: "{:lang('标签信息')}",templet:function(d){
+            let str = `<div style = "text-align:left">`
+            str += "<span>邀&nbsp;请&nbsp;&nbsp;码："+d.rec_code+"</span>";
+            str += "<br><span>会员等级："+d.level_name+"</span>";
+            str += `</div>`
+            return str
+      },width:180},
+      {field:"rec_name", title: "上级用户"},
+      {field:"add_time", title: "{:lang('注册时间')}/{:lang('注册ip')}",templet:function(d){
+        let red = d.reg_rep > 1 ? 'color:red' : '';
+        let str = `<div>`+d.add_time+`<br><span style="`+red+`">`+d.reg_ip + `(${d.reg_rep})</span></div>`
+        return str
+      },width:180},
+      {field:"login_time", title: "{:lang('登录时间')}/{:lang('登录ip')}",templet:function(d){
+        if (d.end_login_ip === '') {
+            return ''
+        }
+        let red = d.login_rep > 1 ? 'color:red' : '';
+        let str = `<div>`+d.login_time+`<br><span style="`+red+`">`+d.end_login_ip+`(${d.login_rep})</span></div>`
+        return str
+      },width:180},
+      {field:"balance", title: "{:lang('余额')}", sort:true},
+      {field:"status", title: "{:lang('状态')}",templet:"#status"},
+      {title: "{:lang('操作')}", align:'center', toolbar: '#bar'}
+    ]]
+  });
+
+    window.table_render = function(){
+        layer.closeAll()
+        table.reload('table', {}); //只重载数据
+    }
+  // 监听排序
+  table.on('sort(table)', function(obj){  
+    table.reload('table', {
+      initSort: obj,
+      where: {
+        field: obj.field,
+        order: obj.type
+      }
+    });
+  });
+
+  //监听工具条
+  table.on('tool(table)', function(obj){
+    var data = obj.data;
+    var url="";
+    
+    if(obj.event == 'base'){
+      url='/user/base?id='+data.id;
+    }
+    
+    layer.open({
+        type: 2,
+        title: "{:lang('查看')}",
+        shadeClose: true,
+        shade: 0.8,
+        area: ['90%', '90%'],
+        content: url //iframe的url
+    });
+  });
+  
+  var $ = layui.$, active = {
+    add: function(){
+      //添加
+        layer.open({
+          type: 2,
+          title: "{:lang('添加')}",
+          shadeClose: true,
+          shade: 0.8,
+          area: ['90%', '90%'],
+          content: '/user/add' //iframe的url
+        });
+    },
+    reload: function(){
+      var username = $('#username').val();
+      var lebals = $('#lebals').val();
+      var logins = $('#logins').val();
+      var rec_id = $('#rec_id').val();
+      var end_login_ip = $('#end_login_ip').val();
+        var login_time = $('#login_time').val();
+        var name = $('#name').val();
+      //执行重载
+      table.reload('table', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        },
+        where: {
+            username: username,
+            name: name,
+            lebals: lebals,
+            logins:logins,
+            rec_id: rec_id,
+            end_login_ip:end_login_ip,
+            login_time:login_time,
+        }
+      }, 'data');
+    },
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+<script type="text/javascript">
+    laydate.render({
+        elem: '#login_time',
+        type: 'date',
+        range: true,
+        lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',},
+        extrabtns: [
+            {id: 'today', text: '{:lang('今天')}', range: [new Date(), new Date()]},
+            {id: 'yesterday', text: '{:lang('昨天')}', range: [new Date(new Date().setDate(new Date().getDate()-1)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-7', text: '{:lang('近7天')}', range: [new Date(new Date().setDate(new Date().getDate()-7)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-30', text: '{:lang('近30天')}', range: [new Date(new Date().setDate(new Date().getDate()-30)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'thismonth', text: '{:lang('本月')}', range: [new Date(new Date().setDate(1)),new Date(new Date(new Date().setMonth(new Date().getMonth()+1)).setDate(0))]},
+            {id: 'lastmonth', text: '{:lang('上月')}', range: [new Date(new Date(new Date().setMonth(new Date().getMonth()-1)).setDate(1)),new Date(new Date().setDate(0))]}
+        ],
+        done: function(val, stdate, ovdate){
+            //当确认选择时间后调用这里
+        }
+    });
+</script>
+</body>
+</html>

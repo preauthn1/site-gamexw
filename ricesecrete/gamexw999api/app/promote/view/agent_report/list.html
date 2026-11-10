@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{:lang('微商报表')}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    {include file="public/header" /}
+</head>
+<body>
+<div style="text-align: right;">
+    <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+        <i class="layui-icon">&#xe9aa;</i>
+    </button>
+</div>
+<hr>
+<div class="demoTable">
+    <form class="layui-form">
+        <div class="layui-inline">
+            <input class="layui-input" id="username" placeholder="{:lang('用户名')}">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="rec_code" placeholder="{:lang('推广码')}">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">
+        </div>
+        <div class="layui-inline">
+            <select id="lebal" class="inline">
+                <option value="">{:lang('用户标签')}</option>
+                <option value="1">{:lang('一般用户')}</option>
+                <option value="2">{:lang('测试用户')}</option>
+            </select>
+        </div>
+
+        <div class="layui-inline">
+            <select id="status" class="inline">
+                <option value="">{:lang('账户状态')}</option>
+                <option value="1">{:lang('待审核')}</option>
+                <option value="2">{:lang('未通过')}</option>
+                <option value="3">{:lang('已通过')}</option>
+            </select>
+        </div>
+        <button class="layui-btn" data-type="reload" type="button">{:lang('搜索')}</button>
+        <button class="layui-btn layui-btn-danger" data-type="reset">{:lang('重置')}</button>
+    </form>
+</div>
+<hr>
+
+<table class="layui-hide" id="table" lay-filter="table"></table>
+<script type="text/html" id="bar">
+    <a class="layui-btn layui-btn-xs" lay-event="agent_info">{:lang('代理报表')}</a>
+</script>
+<script type="text/html" id="ustatus">
+    {{# if (d.status == 1) { }}
+    <span style="color: #d58512">{:lang('待审核')}</span>
+    {{# } else if(d.status == 2) { }}
+    <span style="color: #cc0000">{:lang('未通过')}</span>
+    {{# } else if(d.status == 3) { }}
+    <span style="color: #00A600">{:lang('已通过')}</span>
+
+    {{# } }}
+</script>
+<script type="text/html" id="add_time">
+    {{ timestampToTime(d.add_time) }}
+</script>
+<script type="text/html" id="lebal_s">
+    {{# if (d.lebal == 1) { }}
+    <span>{:lang('一般用户')}</span>
+    {{# } else if(d.lebal == 2) { }}
+    <span>{:lang('测试用户')}</span>
+    {{# } }}
+</script>
+
+{include file="public/botton" /}
+<script>
+    layui.use(['table','laydate','form'], function(){
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        table.render({
+            elem: '#table',
+            url:'/agent_report/list?select=false',
+            response:{
+                statusCode: 1 //规定成功的状态码，默认：0
+            },
+            text: {
+                none: '{:lang('暂无数据')}' //默认：无数据。
+            },
+            page: true,
+            limits:[10,20,30,40,50,60,70,80,90,500,1000],
+            cols: [[
+                {field:"lebal", title: "{:lang('用户标签')}",templet:"#lebal_s"},
+                {field:"username", title: "{:lang('用户名')}"},
+                {field:"rec_code", title: "{:lang('推广码')}"},
+                {field:"rec_person", title: "{:lang('累积推广人数')}"},
+                {field:"tg_balance", title: "{:lang('领取奖金')}"},
+                {field:"ustatus", title: "{:lang('账户状态')}",templet:"#ustatus"},
+                {field:"add_time", title: "{:lang('注册时间')}",templet:"#add_time"},
+                {title: "{:lang('操作')}", align:'center', toolbar: '#bar'}
+            ]]
+        });
+//日期时间范围
+        laydate.render({
+            elem: '#date'
+            ,type: 'datetime'
+            ,range: true
+            ,lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',}
+        });
+        //监听工具条
+        table.on('tool(table)', function(obj){
+            var data = obj.data;
+            var url="";
+            if(obj.event == 'agent_info'){
+                location.href = '/agent_report/agent_info?uid='+data.uid;
+            }
+        });
+
+        var $ = layui.$, active = {
+            reload: function(){
+                var username = $('#username').val();
+                var date = $('#date').val();
+                var lebal = $('#lebal').val();
+                var status = $('#status').val();
+                var rec_code =$('#rec_code').val();
+                //执行重载
+                table.reload('table', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    where: {
+                        username: username,
+                        date: date,
+                        lebal: lebal,
+                        status:status,
+                        rec_code: rec_code
+                    }
+                }, 'data');
+            },
+            reset: function(){
+                location.reload();
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+</body>
+</html>

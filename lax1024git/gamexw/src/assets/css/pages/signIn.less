@@ -1,0 +1,137 @@
+.page-box {
+  padding: 23px 0 42px;
+  .md({
+    padding: 0;
+  });
+}
+
+.nav-bar {
+  margin-bottom: 15px;
+}
+.sing-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 25px;
+  .md({
+    border-radius: 0;
+  });
+}
+.data-list {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  .md({
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 13px;
+    border-bottom: 15px solid var(--color3);
+    margin: 0 -25px 25px;
+    padding:0 25px 25px 25px;
+  });
+}
+.data-item {
+  span {
+    margin-left: 6px;
+  }
+  span:first-child {
+    margin-left: 0;
+  }
+}
+.sing-warp {
+  background-color: var(--color9);
+  padding: 45px 60px;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 35px 60px;
+  .md({
+    border-radius: 0;
+    padding: 0;
+    background-color: transparent;
+    gap: 15px;
+  });
+}
+.sing-item {
+  position: relative;
+  background: var(--sign-crad-color);
+  border-radius: 10px;
+  border: 1px solid var(--color2);
+  min-height: 275px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 23px;
+  color: var(--color7);
+  font-size: 22px;
+  cursor: pointer;
+  user-select: none;
+  .md({
+    padding: 16px;
+    min-height: 207px;
+  });
+}
+.sing-item-active {
+  box-shadow: 0 0 16px var(--color4);
+  background: var(--sign-crad-active-color);
+  .item-price {
+    border-top: 1px solid var(--color4);
+  }
+}
+.item-name {
+  margin-bottom: 21px;
+}
+.item-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 19px;
+  .md({
+    width: 76px;
+    height: 76px;
+  });
+}
+.item-price {
+  width: 100%;
+  text-align: center;
+  padding-top: 21px;
+  border-top: 1px solid var(--color12);
+}
+.rule-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 25px 30px;
+  .md({
+    border-radius: 0;
+  });
+}
+.rule-title {
+  color: var(--color7);
+  font-size: 20px;
+  margin-bottom: 17px;
+}
+.foot {
+  height: 118px;
+  margin-top: 15px;
+}
+.foot-content {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--color1);
+  padding: 30px;
+  display: flex;
+  z-index: 9;
+}
+.sign-icon {
+  font-size: 50px;
+  position: absolute;
+  right: 0%;
+  top: 0%;
+  color: var(--color4);
+  opacity: 0.7;
+  .md({
+    font-size: 40px
+  });
+}

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+
+
+<div style="display:flex;flex-direction: row;align-items: center;justify-content: space-between;">
+  <div></div>
+  <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+    <i class="layui-icon">&#xe9aa;</i>
+  </button> 
+</div>
+
+<hr>
+<div class="demoTable" style="text-align: center;">
+    <form class="layui-form">
+        <div class="layui-inline">
+            <input class="layui-input" id="username" placeholder="{:lang('用户名/邮箱/手机号')}">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="rec_code" placeholder="{:lang('推广码')}">
+        </div>
+        <div class="layui-inline">
+            <select id="status1" class="inline">
+                    <option value=""  selected="">{:lang('审核状态')}</option>
+                    <option value="1">{:lang('待审核')}</option>
+                    <option value="2">{:lang('未通过')}</option>
+                    <option value="3">{:lang('已通过')}</option>
+            </select>
+        </div>
+        <div class="layui-inline">
+            <select id="type1" class="inline">
+                    <option value=""  selected="">{:lang('代理类型')}</option>
+                    <option value="0">{:lang('外部代理')}</option>
+                    <option value="1">{:lang('内部代理')}</option>
+            </select>
+        </div>
+        <button type="button" class="layui-btn" data-type="reload">{:lang('搜索')}</button>
+    </form>
+  
+</div>
+
+<hr>
+<div class="layui-btn-group demoTable">
+    <button class="layui-btn " data-type="add">{:lang('添加')}</button>
+</div>
+<table class="layui-hide" id="table" lay-filter="table"></table>
+ 
+<script type="text/html" id="bar">
+    <a class="layui-btn layui-btn-xs" lay-event="base">{:lang('资料')}</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="edit">{:lang('修改')}</a>-->
+</script>
+
+<script type="text/html" id="status">
+  {{# if (d.status == 1) { }}
+    <a class="layui-btn layui-btn-xs layui-btn-warm">{:lang('待审核')}</a>
+  {{# } else if (d.status == 2) { }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger">{:lang('未通过')}</a>
+  {{# } else { }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal">{:lang('已通过')}</a>
+  {{# } }}
+</script>
+
+<script type="text/html" id="type">
+  {{# if (d.type == 1) { }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger">{:lang('内部代理')}</a>
+    <span>{:lang('返佣比例')}:{{d.rate}}%</span>
+  {{# } else { }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal">{:lang('外部代理')}</a>
+  {{# } }}
+</script>
+
+{include file="public/botton" /}
+<script>
+layui.use(['table','form'], function(){
+  var table = layui.table;
+  var form = layui.form;
+  table.render({
+    elem: '#table',
+    url:'/user_agent/list?select=true',
+    response:{
+      statusCode: 1 //规定成功的状态码，默认：0
+  },
+  text: {
+            none: '{:lang('暂无数据')}' //默认：无数据。
+        },
+  parseData: function(res){ //res 即为原始返回的数据
+        return {
+          "code": res.code, //解析接口状态
+          "msg": res.msg, //解析提示文本
+          "count": res.data.total, //解析数据长度
+          "data": res.data.data //解析数据列表
+        };
+    },
+  page: true,
+limits:[10,20,30,40,50,60,70,80,90,500,1000],
+    cols: [[
+      {field:"id", title: "ID"},
+      {field:"username", title: "{:lang('用户名')}",templet:function(d){
+            let str = `<div style = "text-align:left">`+d.username
+            if (d.phone) {
+                str += `<br><span style="color:red">手机：(+${d.qh})`+d.phone+`</span>`
+            }
+            if (d.mail) {
+                str += `<br><span style="color:red">邮箱：`+d.mail+`</span>`
+            }
+            str += `</div>`
+            return str
+        },width:200},
+      {field:"lebal", title: "{:lang('标签信息')}",templet:function(d){
+            let str = `<div style = "text-align:left">`
+            if (d.lebal==1) {
+                str += "<span>用户标签：{:lang('普通用户')}</span>";
+            }else{
+                str += "<span>用户标签：{:lang('测试用户')}</span>";
+            }
+            str += "<br><span>邀&nbsp;请&nbsp;&nbsp;码："+d.rec_code+"</span>";
+            str += "<br><span>会员等级："+d.level_name+"</span>";
+            str += `</div>`
+            return str
+      },width:180},
+      {field:"rec_name", title: "上级用户"},
+      {field:"type", title: "{:lang('代理类型')}",templet:"#type"},
+      {field:"apply_time", title: "{:lang('注册时间')}/{:lang('注册ip')}",templet:function(d){
+        return d.apply_time+"<br>"+d.apply_ip;
+      },width:200},
+      {field:"status", title: "{:lang('状态')}",templet:"#status"},
+      {title: "{:lang('操作')}", align:'center', toolbar: '#bar'}
+    ]]
+  });
+  //监听工具条
+  table.on('tool(table)', function(obj){
+    var data = obj.data;
+    var url="";
+    if(obj.event == 'base'){
+      url='/user/base?id='+data.uid;
+    }
+    if(obj.event == 'edit'){
+      url='/user_agent/edit?id='+data.id;
+    }
+    if(obj.event == 'success'){
+      var info={
+        id:data.id,
+        status:3,
+      };
+      layer.confirm("{:lang('确认设置吗？')}",{btn:['{:lang('确定')}','{:lang('取消')}'],title:"{:lang('信息')}"}, function(index){
+		  const loading = layer.load(2);
+          adminRequest('/user_agent/status_edit',{edit:true,info:info}).then(function (response) {
+            layer.close(loading)
+            layer.msg(response.data.msg,{
+                time:1500
+              },function(){
+                if (response.data.code==1){
+                  location.reload();
+                }
+          }); 
+        });
+      });
+      return;
+    }
+    if(obj.event == 'error'){
+      var info={
+        id:data.id,
+        status:2,
+      };
+      layer.confirm("{:lang('确认设置吗？')}",{btn:['{:lang('确定')}','{:lang('取消')}'],title:"{:lang('信息')}"}, function(index){
+		  const loading = layer.load(2);
+          adminRequest('/user_agent/status_edit',{edit:true,info:info}).then(function (response) {
+			  layer.close(loading)
+          layer.msg(response.data.msg,{
+                time:1500
+              },function(){
+                if (response.data.code==1){
+                  location.reload();
+                }
+          }); 
+        });
+      });
+      return;
+    }
+    layer.open({
+        type: 2,
+        title: "{:lang('编辑')}",
+        shadeClose: true,
+        shade: 0.8,
+        area: ['90%', '90%'],
+        content: url //iframe的url
+    });
+  });
+  
+  var $ = layui.$, active = {
+      add: function(){
+          //添加
+          layer.open({
+              type: 2,
+              title: "{:lang('添加')}",
+              shadeClose: true,
+              shade: 0.8,
+              area: ['90%', '90%'],
+              content: '/user_agent/add' //iframe的url
+          });
+      },
+    reload: function(){
+      var username = $('#username').val();
+      var rec_code = $('#rec_code').val();
+      var status1 = $('#status1').val();
+      var type = $('#type1').val();
+      //执行重载
+      table.reload('table', {
+        page: {
+          curr: 1 //重新从第 1 页开始
+        },
+        where: {
+          username: username,
+          rec_code: rec_code,
+          status: status1,
+          type: type,
+        }
+      }, 'data');
+    }
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+
+</body>
+</html>

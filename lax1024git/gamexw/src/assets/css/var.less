@@ -1,0 +1,24 @@
+:root {
+  --container-width: 1328px;
+
+  --container-padding: 32px;
+  .md({--container-padding:26px});
+
+  --header-height:103px;
+  .md({--header-height:103px});
+
+  --navbar-height: 60px;
+  .md({--navbar-height:90px});
+
+  --downLoad-height: 60px;
+  .md({--downLoad-height:71px;});
+
+  --border-radius: 10px;
+
+  --menu-width: 230px;
+  .md({--menu-width: 300px;});
+
+  --tabbar-height: 130px;
+  --tabbar-height: calc(130px + constant(safe-area-inset-bottom));
+  --tabbar-height: calc(130px + env(safe-area-inset-bottom));
+}

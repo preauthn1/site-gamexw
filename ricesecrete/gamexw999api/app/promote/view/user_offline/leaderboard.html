@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{:lang('反波胆平台')}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    {include file="public/header" /}
+    <style type="text/css">
+        .m_l_5{
+            margin-top:10px;
+            margin-right: 40px;
+        }
+        .dis_count{
+            justify-content:flex-start;
+            flex-wrap:wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div style="text-align: right;">
+    <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+        <i class="layui-icon">&#xe9aa;</i>
+    </button>
+
+</div>
+
+<form class="layui-form">
+    <div class="demoTable" style="text-align: center;">
+        <div class="layui-inline">
+            <input class="layui-input" id="username" name="username" placeholder="{:lang('用户名')}">
+        </div>
+        <div class="layui-inline">
+            <select id="time_type" name="time_type" class="inline">
+                <option value=""  >{:lang('选择时间类型')}</option>
+                <option value="1" selected="">{:lang('申请时间')}</option>
+                <option value="2">{:lang('到账时间')}</option>
+            </select>
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="date" name="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="min_price" name="min_price" placeholder="{:lang('最小金额')}">
+        </div>
+        -
+        <div class="layui-inline">
+            <input class="layui-input" id="max_price" name="max_price" placeholder="{:lang('最大金额')}">
+        </div>
+        <button class="layui-btn" onclick="reload()" type="button">{:lang('搜索')}</button>
+        <button class="layui-btn" onclick="excel()" type="button">{:lang('导出')}</button>
+    </div>
+</form>
+
+
+<table class="layui-hide" id="table" lay-filter="table"></table>
+
+
+{include file="public/botton" /}
+<script>
+    layui.use(['table','laydate','jquery'], function(){
+        $ = layui.jquery;
+        var table = layui.table;
+        var laydate = layui.laydate;
+        let tableInit = table.render({
+            elem: '#table',
+            url:'/user_offline/leaderboard?select=true',
+            response:{
+                statusCode: 1 //规定成功的状态码，默认：0
+            },
+            text: {
+                none: '{:lang('暂无数据')}' //默认：无数据。
+            },
+            page: true,
+            parseData: function(res){ //res 即为原始返回的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.data //解析数据列表
+                };
+            },
+            limits:[10,20,30,40,50,60,70,80,90,500,1000],
+            cols: [[
+                {field:"username", title: "{:lang('用户名')}", templet:function(d){
+                        return '<a style="color: #1E9FFF;" onclick="user_offline('+d.id+')" lay-event="base">'+d.username+'</a>'
+                 }},
+                {field:"lebal", title: "{:lang('用户标签')}",templet:function(d){
+                        if (d.lebal==1) {
+                            return "{:lang('普通用户')}";
+                        }else{
+                            return "{:lang('测试用户')}";
+                        }
+                }},
+                {field:"sum_arrival_price", title: "{:lang('充值总金额')}"},
+            ]]
+        });
+
+        window.table_render = function(){
+            layer.closeAll()
+            table.reload('table', {}); //只重载数据
+        }
+
+    });
+
+    function reload(){
+        layui.use(['table','laydate','jquery'], function() {
+            $ = layui.jquery;
+            var table = layui.table;
+
+            table.reload('table', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where:get_param()
+            }, 'data');
+        })
+    }
+
+    function excel(){
+        var data = get_param()
+        var patt = encodeSearchParams(data)
+        location.href="/user_offline/leaderboard?select=true&exl=true&"+patt;
+    }
+
+    function encodeSearchParams(obj) {
+        var params = []
+        Object.keys(obj).forEach((key) => {
+            let value = obj[key]
+            if (typeof value === 'undefined') {
+                value = ''
+            }
+            params.push([key, encodeURIComponent(value)].join('='))
+        })
+        return params.join('&')
+    }
+
+    function user_offline(id){
+        layer.open({
+            type: 2,
+            title: "{:lang('充值记录')}",
+            shadeClose: true,
+            shade: 0.8,
+            area: ['90%', '90%'],
+            content: '/user_offline/list?uid='+id
+        });
+    }
+
+    laydate.render({
+        elem: '#date',
+        type: 'date',
+        range: true,
+        lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',},
+        extrabtns: [
+            {id: 'today', text: '{:lang('今天')}', range: [new Date(), new Date()]},
+            {id: 'yesterday', text: '{:lang('昨天')}', range: [new Date(new Date().setDate(new Date().getDate()-1)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-7', text: '{:lang('近7天')}', range: [new Date(new Date().setDate(new Date().getDate()-7)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-30', text: '{:lang('近30天')}', range: [new Date(new Date().setDate(new Date().getDate()-30)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'thismonth', text: '{:lang('本月')}', range: [new Date(new Date().setDate(1)),new Date(new Date(new Date().setMonth(new Date().getMonth()+1)).setDate(0))]},
+            {id: 'lastmonth', text: '{:lang('上月')}', range: [new Date(new Date(new Date().setMonth(new Date().getMonth()-1)).setDate(1)),new Date(new Date().setDate(0))]}
+        ],
+        done: function(val, stdate, ovdate){
+            //当确认选择时间后调用这里
+        }
+    });
+
+
+    function get_param(){
+        let param = {}
+        param.username = $('#username').val();
+        param.date = $('#date').val();
+        param.time_type = $('#time_type').val();
+        param.min_price = $('#min_price').val();
+        param.max_price = $('#max_price').val();
+        return param
+    }
+
+
+
+</script>
+
+</body>

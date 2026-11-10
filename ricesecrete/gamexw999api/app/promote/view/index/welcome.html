@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>{:lang('反波胆平台')}</title>
+  {include file="public/header" /}
+</head>
+<style>
+    .layui-table span{
+        float: right;
+        background-color: #5bc0de;
+        color: #fff;
+        border-radius: .25em;
+        padding: 0 5px;
+        font-size: 12px;
+    }
+    .span-danger {
+        background-color: #d9534f!important;
+    }
+    .span-warning {
+        background-color: #f0ad4e!important;
+    }
+    .alert-warning {
+        color: #8a6d3b;
+        background-color: #fcf8e3;
+        border-color: #faebcc;
+    }
+    
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    .querydata{
+        padding: 15px;
+    }
+    .querydata .layui-card{
+        border: 1px solid #f6f6f6;
+        box-shadow: 0 3px 5px 0 rgba(0,0,0,.35);
+    }
+</style>
+<body class="layui-layout-body">
+    <div id="apps"  style="height: 500px; overflow-y: scroll;padding-bottom: 200px;">
+
+      <div class="layui-tab">
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div class="alert alert-warning" role="alert">{:lang('默认当天数据，数据缓存10分钟，请勿随意清理缓存，会影响访问速度')} <a class="layui-btn layui-btn-xs layui-btn-danger" @click="clear_cache()">{:lang('清理缓存')}</a></div>
+                <div class="demoTable" style="text-align: left;">
+                    <div class="layui-inline" style="width: 200px;">
+                        <input class="layui-input" id="date" name="date" autocomplete="off" ref="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">
+                    </div>
+                    <button class="layui-btn" data-type="reload" type="button" @click="reload()">{:lang('搜索')}</button>
+                </div>
+                <hr>
+                <div class="layui-row">
+                    <div class="layui-col-xs6 layui-col-sm3 layui-col-space15 querydata" v-for="(item,index) in querydata">
+                        <div class="layui-card">
+                            <div class="layui-card-header">{{ item.label }}</div>
+                            <div class="layui-card-body">
+                                {{ item.value }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+{include file="public/botton" /}
+<script src="/static/admin/js/echarts.js"></script>
+<script type="text/javascript">
+  new Vue({
+        el: '#apps',
+        data: {
+          monitor:{
+            cjl:[],
+            timeUpdate:[],
+            finishgame:[],
+            cancelgame:[],
+          },
+          ws:null,
+          querydata:{
+            // TotalUser: {label: "{:lang('用户数')}", value: 0},
+            TotalUser1:{label: "{:lang('新用户人数')}", value: 0},
+            TotalUser2:{label: "{:lang('活跃人数')}", value: 0},
+            // TotalRemainMoney:{label: "{:lang('盘内总余')}", value: 0},
+            TotalRechargeUser1:{label: "{:lang('充值人数')}", value: 0},
+            TotalRechargeUser2:{label: "{:lang('首充人数')}", value: 0},
+            TotalRechargeUser3:{label: "{:lang('复充人数')}", value: 0},
+            TotalRecharge4:{label: "{:lang('充值总额')}", value: 0},
+            TotalWithdraw1:{label: "{:lang('提现总额')}", value: 0},
+            // TotalWithdrawFee1:{label: "{:lang('用户数')}", value: 0},
+            TotalProfitAndLoss1:{label: "{:lang('客损')}", value: 0},
+            TotalAgentCommission1:{label: "{:lang('收益')}", value: 0},
+            TotalGiveMoney:{label: "{:lang('优惠成本')}", value: 0},
+            // BetPeople:{label: "{:lang('投注人数')}", value: 0},
+            BetTotal:{label: "{:lang('有效投注总额')}", value: 0},
+          },
+        },
+        mounted(){
+            this.init();
+            var _this=this;
+        },
+        methods: {
+          init(){
+            var _this=this;
+            layui.use(['form','element'], function(){
+                _this.form = layui.form;
+                _this.$=layui.$;
+                _this.getData();
+            });
+          },
+          getData(){
+                var _this=this;
+                var querydata = _this.querydata;
+                var date = this.$refs.date.value;
+                for (let i in querydata) {
+                    adminRequest('{:url("/report/queryData")}',{search:true,key:i, date:date}).then(function (response) {
+                        if(response.data.code == 1){
+                            _this.querydata[i].value = response.data.data;
+                        }
+                    });
+                }          	
+          },
+          reload(){
+            this.getData();
+          },
+          clear_cache(){
+            var _this=this;
+            var date = this.$refs.date.value;
+            layer.confirm("{:lang('确定要清理缓存吗？')}", {btn:['{:lang('确定')}','{:lang('取消')}'],title:"{:lang('信息')}"},function(index){                
+                adminRequest('{:url("/report/clear_cache")}',{date:date}).then(function (response) {
+                    if(response.data.code == 1){
+                        _this.getData();
+                    }
+                    layer.close(index);
+                });
+            });
+          },
+        }
+    })
+    
+    laydate.render({
+        elem: '#date',
+        type: 'date',
+        range: true,
+        lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',},
+        extrabtns: [
+            {id: 'today', text: '{:lang('今天')}', range: [new Date(), new Date()]},
+            {id: 'yesterday', text: '{:lang('昨天')}', range: [new Date(new Date().setDate(new Date().getDate()-1)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-7', text: '{:lang('近7天')}', range: [new Date(new Date().setDate(new Date().getDate()-7)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-30', text: '{:lang('近30天')}', range: [new Date(new Date().setDate(new Date().getDate()-30)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'thismonth', text: '{:lang('本月')}', range: [new Date(new Date().setDate(1)),new Date(new Date(new Date().setMonth(new Date().getMonth()+1)).setDate(0))]},
+            {id: 'lastmonth', text: '{:lang('上月')}', range: [new Date(new Date(new Date().setMonth(new Date().getMonth()-1)).setDate(1)),new Date(new Date().setDate(0))]}
+        ],
+        done: function(val, stdate, ovdate){
+            //当确认选择时间后调用这里
+        }
+    });
+</script>
+</body>
+</html>

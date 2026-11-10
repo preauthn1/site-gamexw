@@ -1,0 +1,109 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+a {
+  color: var(--color2);
+}
+html {
+  color: var(--color2);
+  // pc端1920设计图 rem响应式自动适配
+  font-size: calc(1920px / 1920 * 100);
+
+  @media (max-width: 1920px) {
+    font-size: calc(100vw / 1920 * 100);
+  }
+
+  @media (max-width: 1500px) and (min-width: 1400px) {
+    font-size: 5.520833vw;
+  }
+
+  @media (max-width: 1400px) and (min-width: 1300px) {
+    font-size: 5.6770833333vw;
+  }
+
+  @media (max-width: 1300px) and (min-width: 1200px) {
+    font-size: 6.1458333333vw;
+  }
+
+  @media (max-width: 1200px) and (min-width: 1100px) {
+    font-size: 6.5625vw;
+  }
+
+  @media (max-width: 1100px) and (min-width: 1000px) {
+    font-size: 6.7708333333vw;
+  }
+
+  @media (max-width: 1000px) and (min-width: 900px) {
+    font-size: 7.2916666667vw;
+  }
+
+  @media (max-width: 900px) and (min-width: 769px) {
+    font-size: 8.3vw;
+  }
+
+  .md({
+    font-size:calc(100vw / 750 * 100);
+  });
+}
+
+body {
+  font-size: 16px;
+  background-color: var(--color3);
+  .md({font-size: 20px});
+}
+
+.container {
+  width: var(--container-width);
+  padding: 0 var(--container-padding);
+  max-width: 100%;
+  margin: 0 auto;
+}
+.input-icon {
+  font-size: 27px;
+  .md({font-size: 29px});
+}
+.full {
+  width: 100%;
+}
+.pc-hide {
+  .md-min({
+    display: none !important;
+  });
+}
+.m-hide {
+  .md({
+    display: none !important;
+  });
+}
+.nav-back {
+  height: 100%;
+  .flex-center();
+  padding: 0 10px 0 10px;
+  margin-right: 10px;
+}
+input {
+  transition: background-color 9999999999999999999s, color 9999999999999999999s;
+}
+.html {
+  * {
+    max-width: 100%;
+  }
+  table {
+    border-collapse: collapse; /* 合并边框 */
+    width: 100%;
+    margin: 15px 0;
+  }
+  td {
+    padding: 16px;
+    border: 1px solid var(--color3);
+  }
+}
+.swiper-button-disabled {
+  opacity: 0.6;
+}

@@ -1,0 +1,48 @@
+// 响应式函数
+.sm(@style) {
+  @media (max-width: 540px) {
+    @style();
+  }
+}
+
+.md(@style) {
+  @media (max-width: 768px) {
+    @style();
+  }
+}
+
+.lg(@style) {
+  @media (max-width: 1024px) {
+    @style();
+  }
+}
+
+.xl(@style) {
+  @media (max-width: 1440px) {
+    @style();
+  }
+}
+
+.sm-min(@style) {
+  @media (min-width: 541px) {
+    @style();
+  }
+}
+
+.md-min(@style) {
+  @media (min-width: 769px) {
+    @style();
+  }
+}
+
+.lg-min(@style) {
+  @media (min-width: 1025px) {
+    @style();
+  }
+}
+
+.xl-min(@style) {
+  @media (min-width: 1441px) {
+    @style();
+  }
+}

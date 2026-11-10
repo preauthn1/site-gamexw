@@ -1,0 +1,188 @@
+*{
+    box-sizing: border-box;
+    font-family: Poppins, "sans-serif";
+}
+.bg_body{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    position: absolute;
+    justify-content: space-between;
+}
+.bg_body_left{
+    width: 60%;
+    background-image: linear-gradient(90deg, rgba(3, 18, 43, 0.75) 0%, rgba(3, 18, 43, 0) 100%), url("/static/admin/img/login_bg2.webp");
+    background-position: center;
+    background-size: cover;
+}
+.bg_body_right{
+    width: 40%;
+    background:-webkit-gradient(linear,left top,left bottom,color-stop(20.2%, #03122b),color-stop(99.64%, #00287a));
+    background: linear-gradient(180deg, #03122b 20.2%, #00287a 99.64%);
+}
+.auth-image-content-container {
+    height: 70%;
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    color: #fff;
+}
+.bg_title{
+    font-size: 40px;
+}
+.bg_title2{
+    font-size: 55px;
+    line-height: 65px;
+    font-weight: 600;
+}
+.bg_title3{
+    margin-top: 20px;
+    font-size: 25px;
+}
+.auth-content {
+    height: 100%;
+    overflow-y: auto;
+    padding: 5.5rem 4rem;
+    background: -webkit-gradient( linear, left top, left bottom, color-stop(20.2%, #03122b), color-stop(99.64%, #00287a) );
+    background: linear-gradient(180deg, #03122b 20.2%, #00287a 99.64%);
+}
+.auth-content-form-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.auth-content-form-title h1 {
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #fff;
+}
+.form {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    margin-top: 4rem;
+}
+.form_title{
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #a5acbb;
+}
+.layui-form-select dl{
+    background: linear-gradient(180deg, #03122b 50.2%, #00287a 99.64%);
+    color: #fff;
+}
+.layui-form-select dl dd{
+    color:#fff;
+}
+input::placeholder{
+    color: #fff;
+}
+.form input {
+    width: 100%;
+    color: #fff;
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    padding: 0.8rem;
+    background: transparent;
+    border-bottom: 1px solid #01b8ff;
+}
+.inputErrorMsgContainer {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    /*display: flex;*/
+    display: none;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    white-space: nowrap;
+    width: 100%;
+    background: rgba(241, 44, 75, 0.2);
+    background-image: url("/static/admin/img/warning.svg");
+    background-repeat: no-repeat;
+    background-position: 0.8rem 0.4rem;
+    padding: 0 1rem;
+    background-size: 17px;
+}
+.inputErrorMsg {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #fff;
+    padding: 0.4rem 0rem;
+    padding-left: 1.5rem;
+}
+.auth-top{
+    margin-top: 30px;
+}
+.auth-content-form-field {
+    position: relative;
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+.password_ico{
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    right: 0;
+    top: 34px;
+}
+.yzm_ico{
+    width: 23px;
+    height: 18px;
+    position: absolute;
+    right: 0;
+    top: 41px;
+}
+.my_img {
+    width: 135px;
+    height: 38px;
+    position: absolute;
+    right: 0;
+    top: 31px;
+    right: 36px;
+}
+.my_img img{
+    width: 100%;
+    height: 100%;
+}
+.auth-btn-container {
+    width: 100%;
+}
+.btn-margin-top {
+    margin-top: 3rem;
+}
+.btn-primary {
+    font-size: 1.8rem;
+    background: linear-gradient(111.98deg, #00b8ff 18.07%, #1574c4 90.31%);
+}
+.btn {
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #fff;
+    outline: none;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 5rem;
+}

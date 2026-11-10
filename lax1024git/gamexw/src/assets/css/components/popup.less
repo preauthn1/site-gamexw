@@ -1,0 +1,35 @@
+.van-popup--center {
+  width: 640px;
+  height: 10.5rem;
+  padding: 100px;
+  .md({
+    width: 690px;
+    padding:40px 30px;
+    overflow: visible !important;
+  });
+}
+:deep(.van-popup__close-icon) {
+  .size(35px);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  font-size: 20px;
+  .flex-center();
+  color: var(--color7);
+  .md({
+    left: 50%;
+    top: auto;
+    transform: translate(-50%,70px);
+    border:1px solid #FFF;
+    .size(45px);
+    font-size: 28px;
+  });
+}
+.van-popup--bottom {
+  width: 640px;
+  padding: 30px;
+  .md({
+    width: 100%;
+    padding:40px 30px;
+    overflow: visible !important;
+  });
+}

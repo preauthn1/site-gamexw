@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}  
+</head>
+<body>  
+
+
+<div style="text-align: right;">
+    <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+        <i class="layui-icon">&#xe9aa;</i>
+    </button>	
+</div>
+
+<hr>
+<div class="demoTable" style="text-align: left;">
+    <form class="layui-form" id="excel" action="">
+    <input type="hidden" name="status" value="{$_GET.s_status ??''}">
+    <input type="hidden" name="uid" value="{$uid}">
+    <div class="layui-inline">
+        <input class="layui-input" name="username" id="username" placeholder="{:lang('用户id')}/{:lang('用户名')}">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="ls_name" id="ls_name1" placeholder="{:lang('联赛名称')}">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="z_name" id="z_name" placeholder="{:lang('主队')}">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="k_name" id="k_name" placeholder="{:lang('客队')}">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="zd_number" id="zd_number" placeholder="{:lang('单号')}">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="add_time" id="add_time" placeholder="{:lang('下注时间')}">
+    </div>
+    
+    <div class="layui-inline">
+        <select id="s_status" name="s_status" class="inline">
+            <option value=""  selected="">{:lang('状态')}</option>
+            <option value="1">{:lang('等待结算')}</option>
+            <option value="2">{:lang('已注销')}</option>
+            <option value="3">{:lang('输')}</option>
+            <option value="4">{:lang('赢')}</option>
+        </select>
+    </div>
+    <button class="layui-btn" data-type="reload" type="button">{:lang('搜索')}</button>
+   
+  </form>
+</div>
+
+<hr>
+
+
+<table class="layui-hide" id="table" lay-filter="table"></table>
+
+<script type="text/html" id="status">
+	{{# if (d.status == 1) { }}
+    <a class="layui-btn layui-btn-xs">{:lang('等待结算')}</a>
+  {{# } else if (d.status == 2){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-disabled">{:lang('已注销')}</a>
+  {{# } else if (d.status == 3){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger">{:lang('输')}</a>
+  {{# } else if (d.status == 4){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal">{:lang('赢')}</a>
+  {{# } }}
+</script>
+
+<script type="text/html" id="lebal">
+  {{# if (d.zd_type == 1) { }}
+    <a class="layui-btn layui-btn-xs">{:lang('正赔率')}</a>
+  {{# } else if (d.zd_type == 2){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal">{:lang('反波胆')}</a>
+  {{# } }}
+  {{# if (d.indemnity == 1) { }}
+    <a class="layui-btn layui-btn-xs layui-btn-danger">{:lang('包赔跟投')}</a>
+  {{# } else if (d.indemnity == 2){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-warm">{:lang('推荐跟投')}</a>
+  {{# } }}
+</script>
+
+<script type="text/html" id="ls_name">
+  <div>{{ d.ls_name }}</div>
+  <div>{{ d.ls_team_zname }}-{{ d.ls_team_kname }}</div>
+</script>
+
+{include file="public/botton" /}
+
+
+<script>
+layui.use(['table','form'], function(){
+  var table = layui.table;
+  table.render({
+  	elem: '#table',
+        url:'{:url("/liansai_zhudan/get_order_data")}?select=true&uid='+{$uid}+'&s_status={$_GET.s_status ??""}',
+  	response:{
+	    statusCode: 1 //规定成功的状态码，默认：0
+	},
+    text: {
+            none: "{:lang('暂无数据')}" //默认：无数据。
+        },
+	page: true,
+    parseData: function(res){ //res 即为原始返回的数据
+        return {
+          "code": res.code, //解析接口状态
+          "msg": res.msg, //解析提示文本
+          "count": res.data.total, //解析数据长度
+          "data": res.data.data //解析数据列表
+        };
+    },
+    limits:[10,20,30,40,50],
+    cols: [[
+      {field:"add_time", title: "{:lang('下注时间')}"},
+      {field:"zd_number", title: "{:lang('注单编号')}"},
+      {field:"username", title: "{:lang('用户名')}"},
+      {field:"lebal", title: "{:lang('赔率类型')}",templet:"#lebal"},
+      {field:"ls_name", title: "{:lang('联赛名称')}",templet:"#ls_name"},
+      {field:"peilv", title: "{:lang('赔率')}%",templet:function(d){
+          return d.peilv+"%";
+      }},
+      {field:"peilv", title: "{:lang('投注项')}",templet:function(d){
+          return d.zd_fs+"-"+d.kd_fs;
+      }},
+      {field:"tz_price", title: "{:lang('投注金额')}"},
+      {field:"sy_res", title: "{:lang('输赢')}"},
+      {field:"status", title: "{:lang('注单状态')}",templet:"#status"},
+      {field:"cancel_time", title: "{:lang('结算时间')}"},
+    ]]
+  });
+
+  //监听工具条
+  table.on('tool(table)', function(obj){
+    var data = obj.data;
+    var url="";    
+    
+    if(obj.event == 'base'){
+        url='{:url("/user/base")}?id='+data.uid;
+    }
+    layer.open({
+        type: 2,
+        title: "{:lang('查看')}",
+        shadeClose: true,
+        shade: 0.8,
+        area: ['90%', '90%'],
+        content: url //iframe的url
+    });
+  });
+  
+  var $ = layui.$, active = {
+    reload: function(){
+        var ls_name = $('#ls_name1').val();
+        var z_name = $('#z_name').val();
+        var k_name = $('#k_name').val();
+        var zd_number = $('#zd_number').val();
+        var s_status = $('#s_status').val();
+        var add_time = $('#add_time').val();
+        var username = $('#username').val();
+        //执行重载
+        table.reload('table', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },
+            where: {
+                ls_name: ls_name,
+                z_name: z_name,
+                k_name: k_name,
+                zd_number:zd_number,
+                add_time:add_time,
+                s_status:s_status,
+                username:username,
+            }
+        }, 'data');
+    },
+    excel: function(){
+        $("#excel").submit();
+    }
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+});
+</script>
+
+<script type="text/javascript">
+    laydate.render({
+        elem: '#add_time',
+        type: 'date',
+        range: true,
+        lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',},
+        extrabtns: [
+            {id: 'today', text: '{:lang('今天')}', range: [new Date(), new Date()]},
+            {id: 'yesterday', text: '{:lang('昨天')}', range: [new Date(new Date().setDate(new Date().getDate()-1)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-7', text: '{:lang('近7天')}', range: [new Date(new Date().setDate(new Date().getDate()-7)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-30', text: '{:lang('近30天')}', range: [new Date(new Date().setDate(new Date().getDate()-30)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'thismonth', text: '{:lang('本月')}', range: [new Date(new Date().setDate(1)),new Date(new Date(new Date().setMonth(new Date().getMonth()+1)).setDate(0))]},
+            {id: 'lastmonth', text: '{:lang('上月')}', range: [new Date(new Date(new Date().setMonth(new Date().getMonth()-1)).setDate(1)),new Date(new Date().setDate(0))]}
+        ],
+        done: function(val, stdate, ovdate){
+            //当确认选择时间后调用这里
+        }
+    });
+</script>
+</body>
+</html>

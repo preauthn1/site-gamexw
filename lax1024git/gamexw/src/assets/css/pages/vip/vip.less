@@ -1,0 +1,146 @@
+.page-box {
+  padding: 23px 0 42px;
+  .md({
+    padding: 0 ;
+    margin-top: 15px;
+  });
+}
+.nav-bar {
+  margin-bottom: 15px;
+}
+.cur-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  padding: 61px 22px 45px 28px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  .md({
+    border-radius: 0px;
+  });
+}
+.btn-list {
+  .md({
+    display: flex;
+    flex-direction: column;
+    .btn{
+      margin: 0;
+      margin-bottom: 15px;
+      &:last-child{
+        margin-bottom: 0;
+      }
+    }
+  });
+}
+.cur-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: var(--color14);
+  color: var(--color7);
+  font-size: 14px;
+  padding: 5px 16px 5px 10px;
+  border-radius: 5px 0px 5px 0px;
+}
+.vip-icon {
+  .size(100px);
+  object-fit: contain;
+}
+.cur-tip {
+  font-size: 18px;
+  margin: 0 26px;
+  flex: 1;
+  .md({
+    line-height: 1.8;
+  });
+  .vip-lev {
+    color: var(--color6);
+    margin: 0 0.3em;
+  }
+  .price {
+    color: var(--color7);
+    margin: 0 0.3em;
+  }
+}
+.vip-level-list {
+  background-color: var(--color1);
+  border-radius: 5px;
+  padding: 23px 24px 37px;
+  margin-bottom: 16px;
+  .md({
+    border-radius: 0;
+  });
+}
+.vip-level-title {
+  font-size: 22px;
+  color: var(--color7);
+  margin-bottom: 20px;
+}
+.tabs {
+  --van-tabs-line-height: 62px;
+  :deep(.van-tabs__line) {
+    --van-tabs-bottom-bar-width: 185px;
+  }
+  :deep(.van-tab) {
+    font-size: 18px;
+    margin-right: 89px;
+    min-width: 185px;
+    .md({
+      font-size: 20px;
+      margin-right: 0;
+    });
+  }
+  :deep(.van-tabs__wrap) {
+    border-bottom: 1px solid var(--color5);
+    margin: 0 -24px;
+    margin-bottom: 20px;
+    .md({
+      padding: 0 20px;
+    });
+  }
+}
+.table-lev-icon {
+  .size(70px);
+  object-fit: contain;
+}
+.question-icon {
+  margin-left: 8px;
+  cursor: pointer;
+  outline: none;
+}
+.bet-item-box {
+  max-width: 100%;
+}
+.progress {
+  width: 351px;
+  max-width: 100%;
+  margin-top: 6px;
+}
+.bouns {
+  color: var(--color6);
+}
+.rule-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  .md({
+    border-radius: 0;
+  });
+}
+.rule-title {
+  padding: 23px 26px;
+  font-size: 22px;
+  color: var(--color7);
+  border-bottom: 1px solid var(--color5);
+}
+.rule-content {
+  padding: 29px;
+  font-size: 18px;
+}
+.rule-item-title {
+  margin-bottom: 8px;
+  color: var(--color7);
+}
+.rule-item {
+  margin-bottom: 22px;
+}

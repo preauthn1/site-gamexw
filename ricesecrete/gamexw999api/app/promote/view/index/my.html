@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>{:lang('反波胆平台')}</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	{include file="public/header" /}
+</head>
+<body>
+<style type="text/css">
+	.iframes{
+		width: 100%;
+		height: 600px;
+		border: none;
+	}
+	.details_button{
+		padding:15px;
+	}
+	.layui-btn{
+		margin-right:15px;
+	}
+</style>
+
+<form class="layui-form" id="apps">
+	<div class="layui-tab layui-tab-card">
+
+		<div class="layui-tab-content">
+			<div class="layui-tab-item layui-show">
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('用户名')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.username" placeholder="{:lang('用户名')}" class="layui-input layui-disabled" disabled="">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">{:lang('登录密码')}</label>
+						<div class="layui-input-block">
+							<input type="text" v-model="info.new_password" placeholder="{:lang('登录密码')}" class="layui-input password" oninput="password_button()">
+						</div>
+					</div>
+					<div class="layui-inline password_button" style="display:none">
+						<a class="layui-btn layui-btn-xs" onclick="edit_password()">{:lang('确定')}</a>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('余额')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.balance" placeholder="{:lang('余额')}" class="layui-input layui-disabled balance" disabled="">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('选择提现银行')}</label>
+					<div class="layui-input-block">
+						<select name="info.bank_list" class="bank">
+							<option v-for="(v,k) in info.bank_list" :value="v.id">{{v.bank_name}}-{{v.bank_number}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-inline">
+						<label class="layui-form-label">{:lang('提现金额')}</label>
+						<div class="layui-input-block">
+							<input type="number" v-model="info.integral" placeholder="{:lang('提现金额')}" class="layui-input withdrawal" oninput="withdrawal_button()" >
+						</div>
+					</div>
+					<div class="layui-inline withdrawal_button"  style="display:none">
+						<a class="layui-btn layui-btn-xs" onclick="withdrawal()">{:lang('确定')}</a>
+					</div>
+				</div>
+
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('推广链接')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.rec_url" placeholder="{:lang('推广链接')}" class="layui-input">
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+</form>
+
+
+{include file="public/botton" /}
+
+<script>
+
+	var vm = new Vue({
+		el: '#apps',
+		data: {
+			info:{
+				id:"{$id}",
+				username:"",
+				mail:"",
+				real_name:"",
+				betamount:"",
+				password:"",
+				withdrawal_pwd:"",
+				is_check_phone:1,
+				lebal:1,
+				status:1,
+				level_id:1,
+				top_code:"",
+				is_agent:0,
+				limit_min:0,
+				limit_max:0,
+				limit_sum_max:0,
+				mail:'',
+				remark:'',
+				set_fund_money:0,
+				live_fund_money:0,
+				remark:'',
+				sc_date:0
+			},
+			form:null,
+			$:null,
+		},
+		mounted(){
+			this.getData();
+		},
+		methods: {
+			init: function() {
+				var _this=this;
+				layui.use(['form','laydate','element'], function(){
+					_this.form = layui.form;
+					_this.$=layui.$;
+					_this.form.on("radio",function(data){
+						_this.info[data.elem.name]=data.value;
+					});
+					_this.form.on("select",function(data){
+						_this.info[data.elem.name]=data.value;
+					});
+					_this.form.on('switch(is_check_phone)', function(data){
+						_this.info[data.elem.getAttribute('lay-filter')]=data.elem.checked?"1":"0";
+					});
+				});
+			},
+			getData(){
+				var _this=this;
+				adminRequest('/user/my',{find:true,id:this.info.id}).then(function (response) {
+					_this.info=response.data.data;
+					_this.init();
+				});
+			},
+			submitData:function(){
+				adminRequest('/user/edit',{edit:true,info:this.info}).then(function (response) {
+					layer.msg(response.data.msg,{
+						time:1500
+					},function(){
+						if (response.data.code==1){
+							//location.reload();
+						}
+					});
+				});
+			},
+			open_where(title,url,w,h){
+				$l.open(title,url,w,h)
+			}
+		}
+	})
+	function password_button() {
+		if ($('.password').val().length > 0) {
+			$('.password_button').show();
+		} else {
+			$('.password_button').hide();
+		}
+	}
+	function withdrawal_button() {
+		if ($('.withdrawal').val() > 0) {
+			$('.withdrawal_button').show();
+		} else {
+			$('.withdrawal_button').hide();
+		}
+	}
+	function edit_password() {
+		password = $('.password').val();
+		var _this=this;
+		adminRequest('/user/edit',{edit:true,info:{id:"{$id}",new_password:password}}).then(function (response) {
+			if(response.data.code == 1) {
+				location.reload(true)
+			}
+		});
+	}
+	function withdrawal() {
+		amount = $('.withdrawal').val();
+		bank = $('.bank').val();
+		var _this=this;
+		adminRequest('/user/withdrawal',{info:{id:"{$id}",bank_id:bank,w_price:amount}}).then(function (response) {
+			layer.msg(response.data.msg,{
+				time:1500
+			},function(){
+				if (response.data.code==1){
+					location.reload();
+				}
+			});
+		});
+	}
+</script>
+</body>
+</html>

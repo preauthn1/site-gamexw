@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+<style type="text/css">
+	.iframes{
+		width: 100%;
+		height: 600px;
+		border: none;
+	}
+	.details_button{
+		padding:15px;
+	}
+	.layui-btn{
+		margin-right:15px;
+	}
+</style>
+
+<form class="layui-form" id="apps">
+  	<div class="layui-tab layui-tab-card">
+	    
+	    <div class="layui-tab-content">
+	    	<div class="layui-tab-item layui-show">
+	    		<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('用户名')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.username" placeholder="{:lang('用户名')}" class="layui-input layui-disabled" disabled="">
+				    </div>
+			  	</div>
+
+				<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('代理类型')}</label>
+				    <div class="layui-input-block">
+				    	<select name="type">
+                                            <option v-for="(v,k) in types" :value="v.key" :selected="info.type==v.key">{{v.name}}</option>
+				    	</select>
+				    </div>
+				</div>			  	
+
+			  	<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('返佣比例')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.rate" placeholder="{:lang('返佣比例')}" class="layui-input" >
+                                      <span style="color: #ccc;">{:lang('只针对三方游戏返佣的比例设置，不设置则启用系统设置返佣比例')}<span>
+				    </div>
+			  	</div>
+                                
+				<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('代理状态')}</label>
+				    <div class="layui-input-block">
+				      <input type="radio" name="status" value="1" title="{:lang('待审核')}" :checked="info.status==1">
+				      <input type="radio" name="status" value="2" title="{:lang('拒绝')}" :checked="info.status==2">
+                                      <input type="radio" name="status" value="3" title="{:lang('通过')}" :checked="info.status==3">
+				    </div>
+				</div>
+                                
+				<div class="layui-form-item">
+				    <div class="layui-input-block">
+				      <button type="button" class="layui-btn" @click="submitData">{:lang('保存')}</button>
+				    </div>
+			  	</div>
+	    	</div>
+
+	    </div>
+    </div>	
+</form>
+               
+          
+{include file="public/botton" /}
+
+<script>
+
+var vm = new Vue({
+        el: '#apps',
+        data: {
+        	info:{
+                    id:"{$id}",
+                    type:0,
+                    rate:"0.00",
+                    status:1,
+        	},
+        	types:[
+                    {name:"内部代理",key:"1",},
+                    {name:"外部代理",key:"0",},
+        	],
+        	form:null,
+        	$:null,
+        },
+        mounted(){
+        	this.getData();
+        },
+        methods: {
+          	init: function() {
+          		var _this=this;
+		        layui.use(['form','laydate','element'], function(){
+                            _this.form = layui.form;
+                            _this.$=layui.$;
+                            _this.form.on("radio",function(data){
+                                    _this.info[data.elem.name]=data.value;
+                            });
+                            _this.form.on("select",function(data){
+                                _this.info[data.elem.name]=data.value;
+                            });
+                             _this.form.on('switch(is_check_phone)', function(data){
+		                        _this.info[data.elem.getAttribute('lay-filter')]=data.elem.checked?"1":"0";
+		                    });
+                        });
+	        },
+	        getData(){
+	        	var _this=this;
+		        adminRequest('/user_agent/edit',{find:true,id:this.info.id}).then(function (response) {	
+		        	_this.info=response.data.data;
+					_this.init();
+				});
+	        },
+	        submitData:function(){
+	        	adminRequest('/user_agent/edit',{edit:true,info:this.info}).then(function (response) {
+						layer.msg(response.data.msg,{
+				        	time:1500
+				        },function(){
+				        	if (response.data.code==1){
+								//location.reload();
+							}
+				        });
+				});
+	        },
+	        open_where(title,url,w,h){
+	        	$l.open(title,url,w,h)
+	        }
+      }
+    })
+</script>
+</body>
+</html>
+

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no,target-densitydpi=device-dpi" />
+	<title>注册</title>
+</head>
+<style type="text/css">
+	.bac{
+		background: url(/share/reg_bac.png);
+		background-size: 100% 100%;
+		height: 100%;
+		width: 100%;
+		position: fixed;
+		left: 0;
+		top: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.data{
+		width: 80%;
+		margin: auto;
+	}
+	.data-item{
+		margin: 20px 0;
+		box-sizing: border-box;
+	}
+	.data-item-title{
+		color: #ffffff;
+		font-size: 14px;
+		font-weight: 400;
+		margin-bottom: 5px;
+	}
+	.data-item-input{
+		width: 100%;
+		height: 48px;
+	  	border-radius: 8px;
+	  	border: solid 1px rgba(255,255,255,0.6);
+	  	background: rgba(255,255,255,0.2);
+	  	color: #ffffff;
+	  	padding-left: 10px;
+	  	font-size: 14px;
+	  	box-sizing: border-box;
+	}
+	input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+	  	color: #ffffff;
+	  	font-size: 14px;
+	}
+	.data-item-code{
+		height: 48px;
+		width: 100px;
+		margin-left: 10px;
+	}
+	.data-item1{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+	}
+	.data-item-submit{
+		border-radius: 8px;
+  		background: #3265ff;
+  		color: #ffffff;
+  		font-size: 16px;
+  		text-align: center;
+  		padding: 15px 0;
+	}
+</style>
+<body>	
+	<div class="bac" id="apps">
+		<div class="data">
+			<div class="data-item">
+				<div class="data-item-title">账号</div>
+				<input type="text" class="data-item-input" v-model="info.username" placeholder="6-16位数字和字母组合，字母开头">
+			</div>
+			<div class="data-item">
+				<div class="data-item-title">密码</div>
+				<input type="password" class="data-item-input" v-model="info.password" placeholder="6-16位密码，字母区分大小写">
+			</div>
+			<div class="data-item">
+				<div class="data-item-title">验证码</div>
+				<div class="data-item1">
+					<input type="text" class="data-item-input" v-model="info.code" placeholder="验证码">
+					<img :src="captche" class="data-item-code" @click="getCaptche">
+				</div>
+			</div>
+			<div class="data-item">
+				<div class="data-item-submit" @click="submitData">注册</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="/share/js/vue.js"></script>
+<script type="text/javascript" src="/share/js/axios.js"></script>
+<script type="text/javascript" src="/share/js/Request.js"></script>
+<script type="text/javascript" src="/share/js/layer-v3.5.1/layer/mobile/layer.js"></script>
+<script>
+var vm = new Vue({
+        el: '#apps',
+        data: {
+        	info:{
+	        	username:"",
+	        	password:"",
+	        	code:"",
+        	},
+        	captche:""
+        },
+        mounted(){
+        	this.getCaptche();
+        },
+        methods: {
+        	getCaptche:function(){
+        		this.captche='/reg/captcha?id='+Math.random();
+        	},
+        	submitData:function(){
+        		var _this=this;
+        		Request('/reg/index',{reg:true,info:this.info}).then(function (response) {
+        			layer.open({
+				    content: response.data.msg
+				    ,skin: 'msg',
+				    time: 2 //2秒后自动关闭
+				});
+        			if (response.data.code==1){
+    					location.href="/index/index";
+    				}else{
+    					_this.getCaptche();
+    				}
+        			
+			});
+        	}
+      	}
+    })
+</script>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+<style type="text/css">
+	.iframes{
+		width: 100%;
+		height: 600px;
+		border: none;
+	}
+	.details_button{
+		padding:15px;
+	}
+	.layui-btn{
+		margin-right:5px;
+	}
+</style>
+
+<form class="layui-form" id="apps">
+  	<div class="layui-tab layui-tab-card">
+	    <ul class="layui-tab-title">
+	      <li class="layui-this">{:lang('基本资料')}</li>
+	      <li>{:lang('数据概况')}</li>
+	    </ul>
+	    <div class="layui-tab-content">
+	    	<div class="layui-tab-item layui-show">
+	    		<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('用户名')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.username" placeholder="{:lang('用户名')}" class="layui-input layui-disabled" disabled="">
+				    </div>
+			  	</div>
+
+			  	<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('余额')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.balance" placeholder="{:lang('余额')}" class="layui-input layui-disabled" disabled="">
+				    </div>
+			  	</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('积分')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.integral" placeholder="{:lang('余额')}" class="layui-input layui-disabled" disabled="">
+					</div>
+				</div>
+
+			  	<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('活期基金余额')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.live_fund_money" placeholder="{:lang('基金余额')}" class="layui-input layui-disabled" disabled="">
+				    </div>
+			  	</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('真实姓名')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.real_name" placeholder="{:lang('真实姓名')}" class="layui-input layui-disabled" disabled>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('邮箱')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.mail" placeholder="{:lang('邮箱')}" class="layui-input layui-disabled" disabled="">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('最低下注')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.limit_min" placeholder="{:lang('最低下注')}" class="layui-input" disabled="">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('最高下注')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.limit_max" placeholder="{:lang('最高下注')}" class="layui-input" disabled="">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('单场最高下注')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.limit_sum_max" placeholder="{:lang('单场最高下注')}" class="layui-input" disabled="">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('会员等级')}</label>
+				    <div class="layui-input-block">
+				    	<select name="level_id" disabled>
+                                            <option v-for="(v,k) in vip" :value="v.key" :selected="info.level_id==v.key">{{v.name}}</option>
+				    	</select>
+				    </div>
+				</div>
+
+				<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('上级id')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.rec_id" placeholder="{:lang('上级id')}" class="layui-input layui-disabled" disabled>
+				    </div>
+			  	</div>
+
+			  	<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('推广码')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.rec_code" placeholder="{:lang('推广码')}" class="layui-input layui-disabled" disabled>
+				    </div>
+			  	</div>
+
+			  	<div class="layui-form-item">
+					<div class="layui-inline">
+					    <label class="layui-form-label">{:lang('注册时间')}/ip</label>
+					    <div class="layui-input-block">
+					      <input type="text" placeholder="{:lang('注册时间')}/ip" class="layui-input layui-disabled" disabled :value="info.add_time+'/'+info.reg_ip">
+					    </div>
+				    </div>
+				    <div class="layui-inline">
+					    <label class="layui-form-label">{:lang('登录时间')}/ip</label>
+					    <div class="layui-input-block">
+					      <input type="text" placeholder="{:lang('登录时间')}/ip" class="layui-input layui-disabled" disabled :value="info.login_time+'/'+info.end_login_ip">
+					    </div>
+				    </div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">{:lang('区号')}</label>
+					<div class="layui-input-block">
+						<input type="text" v-model="info.qh" placeholder="{:lang('区号')}" class="layui-input" disabled>
+					</div>
+				</div>
+				<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('手机号码')}</label>
+				    <div class="layui-input-block">
+				      <input type="text" v-model="info.phone" placeholder="{:lang('手机号码')}" class="layui-input" disabled>
+				    </div>
+			  	</div>                    
+			  	<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('手机验证')}</label>
+				    <div class="layui-input-block">
+				      <input type="checkbox" lay-filter="is_check_phone" lay-skin="switch" lay-text="{:lang('需要')}|{:lang('不需要')}" checked="" disabled>
+				    </div>
+				</div>
+
+			  	<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('用户标签')}</label>
+				    <div class="layui-input-block">
+				      <input type="radio" name="lebal" value="1" title="{:lang('一般用户')}" :checked="info.lebal==1" disabled>
+				      <input type="radio" name="lebal" value="2" title="{:lang('测试用户')}" :checked="info.lebal==2" disabled>
+				    </div>
+				</div>
+
+				<div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('用户状态')}</label>
+				    <div class="layui-input-block">
+				      <input type="radio" name="status" value="1" title="{:lang('开启')}" :checked="info.status==1" disabled>
+				      <input type="radio" name="status" value="0" title="{:lang('禁用')}" :checked="info.status==0" disabled>
+				    </div>
+				</div>
+	    	</div>
+	    	<div class="layui-tab-item">
+	    		<!--div class="details_button">
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('用户银行卡')}','/user_bank/user_bank_list?uid='+info.id)">{:lang('银行卡')}</button>
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('用户登陆日志')}','/user_login/list?uid='+info.id,1000,700)">{:lang('登陆日志')}</button>
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('用户操作记录')}','/user_admin_log/user_list?uid='+info.id,1200,700)">{:lang('操作记录')}</button>
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('收益明细')}','/user_balance_mx/user_list?uid='+info.id,1300,700)">{:lang('收益明细')}</button>
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('订单记录')}','/liansai_zhudan/user_lists?uid='+info.id)">{:lang('订单记录')}</button>
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('充值记录')}','/user_offline/user_list?uid='+info.id)">{:lang('充值记录')}</button>
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('提现记录')}','/user_withdrawal/user_list?uid='+info.id)">{:lang('提现记录')}</button>
+	    			<button type="button" class="layui-btn" @click.stop="open_where('{:lang('上级会员')}','/user/user_top?uid='+info.id)">{:lang('上级会员')}</button>
+				<button type="button" class="layui-btn" @click.stop="open_where('{:lang('流水总计')}','/user/running_water?uid='+info.id)">{:lang('流水总计')}</button>
+				<button type="button" class="layui-btn" @click.stop="open_where('{:lang('基金订单')}','/fund/order_list?uid='+info.id)">{:lang('基金订单')}</button>
+				<button type="button" class="layui-btn" @click.stop="open_where('{:lang('基金明细')}','/fund/mx_list?uid='+info.id,1300,700)">{:lang('基金明细')}</button>
+	    		</div-->
+	    		<!-- <iframe :src="'/user_bank/list?uid='+info.id" class="iframes"></iframe> -->
+				<table class="layui-hide" id="table" lay-filter="table"></table>
+			</div>
+	    </div>
+    </div>	
+</form>
+
+
+               
+          
+{include file="public/botton" /}
+
+<script>
+	layui.use(['table','form'], function() {
+		var table = layui.table;
+		var form = layui.form;
+		table.render({
+			elem: '#table',
+			url: '/user/base?get_data=true&id={$id}',
+			response: {
+				statusCode: 1 //规定成功的状态码，默认：0
+			},
+			parseData: function (res) { //res 即为原始返回的数据
+
+				return {
+					"code": res.code, //解析接口状态
+					"msg": res.msg, //解析提示文本
+					"data": res.data //解析数据列表
+				};
+			},
+			text: {
+				none: '{:lang('暂无数据')}' //默认：无数据。
+			},
+			page: false,
+			cols: [[
+				{
+					field: "total_recharge", title: "{:lang('充值总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="1">' + d.total_recharge + '</a>'
+					}
+				},
+				{
+					field: "total_withdraw", title: "{:lang('提现总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="2">' + d.total_withdraw + '</a>'
+					}
+				},
+				{
+					field: "total_profit", title: "{:lang('盈利总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="3">' + d.total_profit + '</a>'
+					}
+				},
+				{
+					field: "total_betslip", title: "{:lang('注单总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="4">' + d.total_betslip + '</a>'
+					}
+				},
+				{
+					field: "total_agentrebate", title: "{:lang('代理返佣总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="5">' + d.total_agentrebate + '</a>'
+					}
+				},
+				{
+					field: "total_increase", title: "{:lang('人工增加总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="6">' + d.total_increase + '</a>'
+					}
+				},
+				{
+					field: "total_jackpot", title: "{:lang('人工赠送彩金总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="7">' + d.total_jackpot + '</a>'
+					}
+				},
+				{
+					field: "total_reduce", title: "{:lang('人工减少总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="8">' + d.total_reduce + '</a>'
+					}
+				},
+				{
+					field: "total_activityaward", title: "{:lang('活动奖励总额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="9">' + d.total_activityaward + '</a>'
+					}
+				},
+				{
+					field: "total_activityaward", title: "{:lang('基金余额')}", templet: function (d) {
+						return '<a style="color: #1E9FFF;" lay-event="base" data-ste="10">' + d.total_fund + '</a>'
+					}
+				},
+			]]
+		});
+
+		//监听工具条
+		table.on('tool(table)', function(obj){
+			var url="";
+			if(obj.event == 'base'){
+				var ste = $(this).data('ste')
+				if(ste == '' || ste == undefined){
+					return
+				}
+				if(ste == 1){
+					url='/user_offline/list?uid={$id}';
+				}else if(ste == 2){
+					url='/user_withdrawal/list?uid={$id}';
+				}else if(ste == 3){
+					url='/liansai_zhudan/lists?uid={$id}&s_status=4';
+				}else if(ste == 4){
+					url='/liansai_zhudan/lists?uid={$id}&s_status=1,3,4';
+				}else if(ste == 5){
+					url='/agent_rakeback/list?uid={$id}&status=3,4';
+				}else if(ste == 6){
+					url='/artificial_balance/list?uid={$id}&a_type=1';
+				}else if(ste == 7){
+					url='/artificial_balance/list?uid={$id}&a_type=3';
+				}else if(ste == 8){
+					url='/artificial_balance/list?uid={$id}&a_type=2';
+				}else if(ste == 9){
+					url='/action_apply/list?uid={$id}';
+				}else if(ste == 10){
+					url='/fund/order_list?uid={$id}';
+				}
+				/*layer.open({
+					type: 2,
+					title: "",
+					shadeClose: true,
+					shade: 0.8,
+					area: ['90%', '90%'],
+					content: url //iframe的url
+				});*/
+			}
+
+		});
+
+	})
+</script>
+
+<script>
+
+var vm = new Vue({
+        el: '#apps',
+        data: {
+        	info:{
+                id:"{$id}",
+                username:"",
+                mail:"",
+                real_name:"",
+                betamount:"",
+                password:"",
+                withdrawal_pwd:"",
+                is_check_phone:1,
+                lebal:1,
+                status:1,
+                level_id:1,
+                top_code:"",
+                is_agent:0,
+                limit_min:0,
+                limit_max:0,
+                limit_sum_max:0,
+                live_fund_money:0,
+        	},
+        	vip:[
+        		{name:"vip0",key:"1",},
+        		{name:"vip1",key:"2",},
+        		{name:"vip2",key:"3",},
+        		{name:"vip3",key:"4",},
+        		{name:"vip4",key:"5",},
+        		{name:"vip5",key:"6",},
+        		{name:"vip6",key:"7",},
+        		{name:"vip7",key:"8",},
+        		{name:"vip8",key:"9",},
+        		{name:"vip9",key:"10",},
+        		{name:"vip10",key:"11",},
+        	],
+        	form:null,
+        	$:null,
+        },
+        mounted(){
+        	this.getData();
+        },
+        methods: {
+          	init: function() {
+          		var _this=this;
+		        layui.use(['form','laydate','element'], function(){
+                            _this.form = layui.form;
+                            _this.$=layui.$;
+                            _this.form.on("radio",function(data){
+		      					_this.info[data.elem.name]=data.value;
+		      				});
+                            _this.form.on("select",function(data){
+                                _this.info[data.elem.name]=data.value;
+                            });
+							layui.form.render();
+                        });
+	        },
+	        getData(){
+	        	var _this=this;
+		        adminRequest('/user/base',{find:true,id:this.info.id}).then(function (response) {	
+		        	_this.info=response.data.data;
+					_this.init();
+				});
+	        },
+	        submitData:function(){
+	        	adminRequest('/user/base',{edit:true,info:this.info}).then(function (response) {	
+						layer.msg(response.data.msg,{
+				        	time:1500
+				        },function(){
+				        	if (response.data.code==1){
+								//location.reload();
+							}
+				        });
+				});
+	        },
+	        open_where(title,url,w,h){
+	        	$l.open(title,url,w,h)
+	        }
+      }
+    })
+</script>
+</body>
+</html>
+

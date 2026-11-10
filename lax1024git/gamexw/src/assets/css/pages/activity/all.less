@@ -1,0 +1,33 @@
+.card-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  padding: 33px;
+  min-height: 860px;
+  .md({
+    padding: 0;
+    border-radius: 10px;
+    min-height: 0;
+  });
+}
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 30px;
+  .md({
+    grid-template-columns: repeat(1, 1fr);
+  });
+}
+.activity-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  object-fit: cover;
+}
+.empty {
+  height: 750px;
+  .md({
+    height: calc(var(--vh) - 110px - var(--tabbar-height));
+  });
+}

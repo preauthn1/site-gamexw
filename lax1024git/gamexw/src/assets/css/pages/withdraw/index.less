@@ -1,0 +1,49 @@
+.page-box {
+  padding: 23px 0 42px;
+  .md({
+    padding: 0;
+  });
+}
+.page-warp {
+  padding-top: 40px;
+  .md({
+    padding-top: 30px;
+  });
+}
+.nav-bar {
+  margin-bottom: 15px;
+}
+.tabs {
+  --van-tabs-line-height: 62px;
+  .md({
+    --van-tabs-line-height: 90px;
+  });
+  :deep(.van-tabs__line) {
+    --van-tabs-bottom-bar-width: 120px;
+  }
+  :deep(.van-tab) {
+    font-size: 18px;
+    margin-right: 50px;
+    min-width: 120px;
+    .md({
+      font-size: 20px;
+    });
+  }
+  :deep(.van-tabs__wrap) {
+    border-bottom: 1px solid var(--color5);
+    .md({
+      background-color: var(--color1);
+    });
+  }
+}
+.card-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  padding: 30px 0 60px;
+  min-height: 800px;
+  .md({
+    padding: 0;
+    background-color: transparent;
+    height: 100%
+  });
+}

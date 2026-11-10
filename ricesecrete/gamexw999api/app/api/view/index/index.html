@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no,target-densitydpi=device-dpi" />
+	<title>注册</title>
+</head>
+<style type="text/css">
+	.bac{
+		background: url(/share/d_bac.png);
+		background-size: 100% 100%;
+		height: 100%;
+		width: 100%;
+		position: fixed;
+		left: 0;
+		top: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.title{
+		color: #ffffff;
+		font-size: 16px;
+		font-weight: 400;
+		padding: 20px 0;
+	}
+	.imgs{
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.d1{
+		position: relative;
+		width: 230px;
+		z-index: 9;
+	}
+	.d2{
+		width: 200px;
+	    position: absolute;
+	    bottom: 20px;
+	    z-index: 1;
+	    right: -50px;
+	}
+	.ios{
+		border-radius: 38px;
+  		background: linear-gradient(180deg, #8FBEFF, #3064FF);
+  		box-shadow: inset 0px -1px rgba(255,255,255,0.5);
+  		color: #ffffff;
+  		font-size: 14px;
+  		width: 80%;
+  		padding: 15px 0;
+  		margin-top: 10px;
+  		display: flex;
+  		flex-direction: column;
+  		align-items: center;
+  		justify-content: center;
+	}
+	.android{
+		border-radius: 36px;
+		background: linear-gradient(180deg, #4ADA7A, #248C45);
+		box-shadow: inset 0px -1px #43cc71;
+  		color: #ffffff;
+  		font-size: 14px;
+  		width: 80%;
+  		padding: 15px 0;
+  		margin-top: 10px;
+  		display: flex;
+  		flex-direction: column;
+  		align-items: center;
+  		justify-content: center;
+	}
+	.t-img{
+		width: 19px;
+  		height: 23px;
+  		margin-bottom: 5px;
+	}
+</style>
+<body>
+    <div class="bac" id="apps">
+        <div class="title">下载app</div>
+        <div class="imgs">
+            <img src="/share/d_1.png" class="d1">
+            <img src="/share/d_2.png" class="d2">
+        </div>
+        <div class="ios">
+            <img src="/share/ios.png" class="t-img">
+            <div onclick="location.href='{$sys.ios_download_url}'">下载Ios客户端</div>
+        </div>
+        <div class="android">
+            <img src="/share/android.png" class="t-img">
+            <div onclick="location.href='{$sys.android_download_url}'">下载Android客户端</div>
+        </div>
+        <div class="android" style="position: absolute; width: 100px;right: 10px; padding: 10px 0; text-align: center;">
+            <div onclick="location.href='{$sys.web_url}'">返回首页</div>
+        </div>
+    </div>
+</body>
+</html>

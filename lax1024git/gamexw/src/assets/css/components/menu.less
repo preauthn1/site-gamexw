@@ -1,0 +1,231 @@
+.menu-box {
+  width: var(--menu-width);
+  background-color: var(--color1);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  box-shadow: 0px 3px 9px 0px rgba(0, 8, 50, 0.49);
+  padding: calc(27px + var(--header-height)) 11px 27px;
+  z-index: 109;
+  overflow: auto;
+  .md({
+    padding: calc(35px + var(--header-height)) 15px 35px;
+    font-size: 18px;
+    &.other-top-padding{
+      padding-top: calc(35px + var(--header-height) + var(--downLoad-height));
+    }
+  });
+}
+.top-menu-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.top-menu-item {
+  width: 100px;
+  height: 70px;
+  padding: 6px;
+  border-radius: var(--border-radius);
+  background-color: var(--color3);
+  margin-bottom: 10px;
+  cursor: pointer;
+  user-select: none;
+  .flex-center();
+  flex-direction: column;
+  .md({
+    width: 130px;
+    height: 91px;
+    margin-bottom: 13px;
+  });
+  &.top-menu-item-active {
+    background: var(--color8);
+    color: var(--color7);
+    .top-menu-icon {
+      display: none;
+      &.top-menu-icon-active {
+        display: block;
+      }
+    }
+  }
+
+  span {
+    .ellipsis();
+    max-width: 100%;
+  }
+}
+.top-menu-icon {
+  width: 48px;
+  height: 25px;
+  object-fit: contain;
+  .md({
+    width: 63px;
+    height: 46px;
+    margin-bottom: 3px;
+  });
+  &.top-menu-icon-active {
+    display: none;
+  }
+}
+.music-box {
+  min-height: 70px;
+  padding: 6px;
+  border-radius: var(--border-radius);
+  background-color: var(--color3);
+  margin-bottom: 10px;
+  padding: 12px 18px 10px;
+  .md({
+    padding: 15px 25px 11px;
+    min-height: 91px;
+    margin-bottom: 13px;
+  });
+}
+.music-icon {
+  font-size: 17px;
+  cursor: pointer;
+  .md({
+    font-size: 23px;
+  });
+}
+.music-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color6);
+  .md({
+    margin-bottom: 14px;
+  });
+}
+.music-name {
+  text-align: center;
+  display: block;
+  margin-top: 8px;
+  .ellipsis();
+}
+:deep(.el-badge__content.is-fixed) {
+  right: auto;
+  left: 0;
+  top: 0;
+  transform: translate(-70%, -50%);
+  border: none;
+  color: var(--color2);
+  pointer-events: none;
+}
+
+.records-box {
+  .music-box();
+  display: flex;
+  align-items: center;
+  padding-left: 23px;
+  padding-right: 23px;
+  cursor: pointer;
+  user-select: none;
+  .md({
+    padding-left: 30px;
+    padding-right: 30px;
+  });
+}
+.records-icon {
+  font-size: 40px;
+  margin-right: 12px;
+  .md({
+    margin-right: 31px;
+    font-size: 52px;
+  });
+}
+.activity-box {
+  padding: 9px 6px;
+  border-radius: var(--border-radius);
+  background-color: var(--color3);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 7px;
+  margin-bottom: 10px;
+  .md({
+    padding: 12px 8px;
+    margin-bottom: 13px;
+    grid-gap: 9px;
+  });
+}
+.activity-item {
+  cursor: pointer;
+  user-select: none;
+  height: 65px;
+  border-radius: var(--border-radius);
+  .flex-center();
+  flex-direction: column;
+  .md({
+    height: 85px;
+  });
+  span {
+    display: block;
+    max-width: 85px;
+    font-size: 14px;
+    color: var(--color7);
+    line-height: 1;
+    .ellipsis();
+  }
+}
+.activity-icon {
+  .size(40px);
+  object-fit: contain;
+  .md({
+    .size(55px);
+  });
+}
+
+.lang-box {
+  padding: 5px 12px;
+  border-radius: var(--border-radius);
+  background-color: var(--color3);
+  .md({
+    padding: 10px 16px;
+  });
+}
+.lang-item {
+  display: flex;
+  align-items: center;
+  color: var(--color2);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color9);
+  cursor: pointer;
+  user-select: none;
+  &:last-child {
+    border: none;
+  }
+}
+.lang-item-icon {
+  font-size: 28px;
+  margin-right: 14px;
+  .md({
+    font-size: 37px;
+    margin-right: 22px;
+  });
+}
+.lang-select-item {
+  padding: 4px 0;
+  cursor: pointer;
+  &:hover {
+    color: var(--color4);
+  }
+}
+.overlay {
+  .lg-min({
+    display: none;
+  });
+}
+
+.menu-enter-active,
+.menu-leave-active {
+  transition: transform 0.3s;
+}
+
+.menu-enter-from,
+.menu-leave-to {
+  transform: translateX(-100%);
+}
+
+.menu-enter-to,
+.menu-leave-from {
+  transform: translateY(0);
+}

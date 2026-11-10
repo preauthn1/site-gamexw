@@ -1,0 +1,33 @@
+.box {
+  .md({
+    padding-top: 90px;
+  });
+}
+.tabs {
+  --van-tabs-line-height: 62px;
+  background-color: var(--color1);
+  position: fixed;
+  top: 0;
+  z-index: 9;
+  .md({
+    --van-tabs-line-height: 90px;
+  });
+  :deep(.van-tabs__line) {
+    --van-tabs-bottom-bar-width: 120px;
+  }
+  :deep(.van-tab) {
+    font-size: 18px;
+    margin-right: 50px;
+    min-width: 120px;
+    .md({
+      font-size: 20px;
+      margin-right: 10px;
+    });
+  }
+  :deep(.van-tabs__wrap) {
+    border-bottom: 1px solid var(--color3);
+    .md({
+    background-color: var(--color1);
+  });
+  }
+}

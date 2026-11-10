@@ -1,0 +1,41 @@
+.notice-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 19px;
+  cursor: pointer;
+  user-select: none;
+  .md({
+    border-radius: 0;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  });
+}
+.notice-bar {
+  padding: 0;
+  font-size: 16px;
+  color: var(--color2);
+  flex: 1;
+  margin: 0 15px;
+  .md({
+    margin: 0 21px;
+    font-size: 20px;
+  });
+}
+.notice-icon {
+  width: 26px;
+  height: 27px;
+  .md({
+    width: 34px;
+    height: 36px;
+  });
+}
+.msg-icon {
+  font-size: 27px;
+  .md({font-size: 39px});
+}
+.notice-skeleton {
+  height: 64px;
+}

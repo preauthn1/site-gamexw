@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>
+<div style="text-align: right;">
+    <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+        <i class="layui-icon">&#xe9aa;</i>
+    </button>
+</div>
+
+<hr>
+<div class="demoTable" style="text-align: center;">
+    <form class="layui-form" >
+        <div class="layui-inline">
+            <input class="layui-input" name="game_sys_sign" id="game_sys_sign" placeholder="{:lang('游戏名称')}">
+        </div>
+       <div class="layui-inline">
+            <input class="layui-input" name="username" id="username" placeholder="{:lang('用户名')}">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" id="date" name="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">
+        </div>
+
+        <button class="layui-btn" data-type="reload" type="button">{:lang('搜索')}</button>
+        <a class="layui-btn layui-btn-danger" href="">{:lang('重置')}</a>
+    </form>
+</div>
+
+
+<table class="layui-hide" id="table" lay-filter="table"></table>
+
+{include file="public/botton" /}
+<script>
+layui.use(['util','table'], function(){
+    var table = layui.table;
+    var util = layui.util
+    var form = layui.form;
+    table.render({
+  	elem: '#table',
+    url:'/game_bets/list?select=true',
+  	response:{
+	    statusCode: 1 //规定成功的状态码，默认：0
+	},
+    text: {
+        none: '{:lang('暂无数据')}' //默认：无数据。
+    },
+    // size:'sm',
+    parseData: function(res){ //res 即为原始返回的数据
+        return {
+          "code": res.code, //解析接口状态
+          "msg": res.msg, //解析提示文本
+          "count": res.data.total, //解析数据长度
+          "data": res.data.data, //解析数据列表
+        };
+    },
+    limit:20,
+    limits:[10,20,30,40,50,60,70,80,90,500,1000],
+	page: true,
+    cols: [[
+      {field:"gb_id", title: "ID",width:"5%"},
+    {field:"game_sys_sign", title: "{:lang('游戏名称')}"},
+      {field:"username", title: "{:lang('用户名')}"},
+      {field:"gb_intime", title: "{:lang('时间')}"},
+      {field:"gb_price", title: "{:lang('投注金额')}",templet:function(d){
+            let str = d.gb_price > 0 ? `<span style="color:#FF5722">${d.gb_price}</span>` : ''
+                return str
+      }},
+      {field:"gb_bettime", title: "{:lang('投注时间')}"},
+      {field:"gb_winprice", title: "{:lang('结算金额')}"},
+      {field:"gb_overtime", title: "{:lang('结算时间')}"},
+    ]],
+  });
+    var $ = layui.$, active = {
+        reload: function(){
+            var username = $('#username').val();
+            var date = $('#date').val();
+            var game_sys_sign = $('#game_sys_sign').val();
+            //执行重载
+            table.reload('table', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where: {
+                    username: username,
+                    date:date,
+                    game_sys_sign:game_sys_sign,
+                }
+            }, 'data');
+        },
+    }
+
+    $('.demoTable .layui-btn').on('click', function(){
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    });
+
+});
+</script>
+<script type="text/javascript">
+    laydate.render({
+        elem: '#date',
+        type: 'date',
+        range: true,
+        lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',},
+        extrabtns: [
+            {id: 'today', text: '{:lang('今天')}', range: [new Date(), new Date()]},
+            {id: 'yesterday', text: '{:lang('昨天')}', range: [new Date(new Date().setDate(new Date().getDate()-1)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-7', text: '{:lang('近7天')}', range: [new Date(new Date().setDate(new Date().getDate()-7)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'lastday-30', text: '{:lang('近30天')}', range: [new Date(new Date().setDate(new Date().getDate()-30)), new Date(new Date().setDate(new Date().getDate()-1))]},
+            {id: 'thismonth', text: '{:lang('本月')}', range: [new Date(new Date().setDate(1)),new Date(new Date(new Date().setMonth(new Date().getMonth()+1)).setDate(0))]},
+            {id: 'lastmonth', text: '{:lang('上月')}', range: [new Date(new Date(new Date().setMonth(new Date().getMonth()-1)).setDate(1)),new Date(new Date().setDate(0))]}
+        ],
+        done: function(val, stdate, ovdate){
+            //当确认选择时间后调用这里
+        }
+    });
+</script>
+</body>
+</html>

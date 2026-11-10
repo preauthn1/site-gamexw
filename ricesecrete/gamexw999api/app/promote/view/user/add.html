@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+
+
+<form class="layui-form" style="margin-top: 20px;" id="apps">
+  
+        <div class="layui-form-item">
+	    <label class="layui-form-label">{:lang('用户名')}</label>
+	    <div class="layui-input-block">
+	      <input type="text" v-model="info.username" placeholder="{:lang('用户名')}" class="layui-input">
+	    </div>
+  	</div>
+        
+        <div class="layui-form-item">
+	    <label class="layui-form-label">{:lang('密码')}</label>
+	    <div class="layui-input-block">
+                <input type="text" v-model="info.password" placeholder="{:lang('密码')}" class="layui-input">
+	    </div>
+  	</div>
+    
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('区号')}</label>
+            <div class="layui-input-block">
+                <input type="text" v-model="info.qh" placeholder="{:lang('区号')}" class="layui-input" >
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">{:lang('手机号码')}</label>
+            <div class="layui-input-block">
+              <input type="text" v-model="info.phone" placeholder="{:lang('手机号码')}" class="layui-input" >
+            </div>
+        </div>
+    
+	<div class="layui-form-item">
+            <label class="layui-form-label">{:lang('邮箱')}</label>
+            <div class="layui-input-block">
+                <input type="text" v-model="info.mail" placeholder="{:lang('邮箱')}" class="layui-input">
+            </div>
+	</div>
+
+	<div class="layui-form-item">
+		<label class="layui-form-label">{:lang('真实姓名')}</label>
+		<div class="layui-input-block">
+                    <input type="text" v-model="info.real_name" placeholder="{:lang('真实姓名')}" class="layui-input">
+		</div>
+	</div>
+    
+  	<div class="layui-form-item">
+	    <div class="layui-input-block">
+	      <button type="button" class="layui-btn" @click="submitData">{:lang('保存')}</button>
+	    </div>
+  	</div>
+</form>
+               
+          
+{include file="public/botton" /}
+
+
+<script>
+
+var vm = new Vue({
+        el: '#apps',
+        data: {
+            info:{
+                username:"",
+                mail:"",
+                real_name:"",
+                phone:"",
+                qh:"",
+                password:"",
+                is_check_phone:1,
+                status:1,
+                level_id:1
+            },
+
+            form:null,
+            $:null,
+        },
+        mounted(){
+        	this.init();
+        },
+        methods: {
+            init: function() {
+                var _this=this;
+                layui.use(['form','laydate'], function(){
+                        _this.form = layui.form;
+                    _this.laydate = layui.laydate;
+                    _this.$=layui.$;
+                    _this.form.on("radio",function(data){
+                            _this.info[data.elem.name]=data.value;
+                    });
+                    _this.form.on("select",function(data){
+                            _this.info[data.elem.name]=data.value;
+                    });
+                });
+            },
+            submitData:function(){
+                adminRequest('/user/add',{add:true,info:this.info}).then(function (response) {	
+                    layer.msg(response.data.msg,{
+                        time:1500
+                    },function(){
+                        if (response.data.code==1){
+                            location.reload();
+                        }
+                    });
+                });
+            },
+      }
+    })
+</script>
+</body>
+</html>

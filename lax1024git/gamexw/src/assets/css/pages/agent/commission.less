@@ -1,0 +1,49 @@
+.card-box {
+  height: 100%;
+  background-color: var(--color1);
+  min-height: 814px;
+  border-radius: 5px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  .md({
+    border-radius: 0;
+    min-height: calc(var(--vh) - var(--navbar-height) - 86px);
+  });
+}
+.title-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.empty {
+  height: 600px;
+}
+:deep(.el-input__suffix) {
+  font-size: 25px;
+}
+.top-input-box {
+  margin-bottom: 24px;
+}
+.search {
+  width: 256px;
+  margin-left: 26px;
+}
+.detail {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.detail-icon {
+  margin-left: 6px;
+  color: var(--color4);
+}
+.copy-icon {
+  font-size: 26px;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+  margin-left: 10px;
+}

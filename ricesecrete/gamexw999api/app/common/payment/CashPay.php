@@ -1,0 +1,129 @@
+<?php
+namespace app\common\payment;
+use app\common\payment\PayRequest;
+use think\facade\Log;
+use think\facade\Request;
+
+class CashPay
+{
+    private $pay_set = [];
+
+    public function __construct($pay_set, $domain)
+    {
+        $this->pay_set = $pay_set;
+    }
+
+    //获取支付信息
+    public function create($pay_arr)
+    {
+        $params['amount'] = intval($pay_arr['apply_price']*100); // 订单金额
+        $params['merchantOrderId'] = $pay_arr['order_sn']; // 商户订单号
+        $params['notifyUrl'] = $pay_arr['notify_url']; // 异步通知地址
+        $params['returnUrl'] = $pay_arr['call_domain']; // 重定向
+        $params['merchantUserId'] = $pay_arr['user_id'];
+        $req = json_encode($params);
+        $header = array(
+            'Authorization:Basic ' . $this->gettoken(),
+            'Content-Type: application/json'
+        );
+        Log::write(['Submit_create', "CashPay", $params,$header], "payment");
+        $res = PayRequest::curlS($this->pay_set['url'], $req, $header);
+        Log::write(['Return_create', "CashPay", $res], "payment");
+        $res = json_decode($res, true);
+        if (empty($res) || $res['code'] != '200' || $res['status'] != '00') {
+            throw new \Exception($res['msg'] ?? '支付信息错误', 0);
+        }
+        if (!isset($res['payUrl'])) {
+            throw new \Exception($res['msg'] ?? '支付信息错误', 0);
+        }
+        $pay_info['pay_url'] = $res['payUrl'];
+        return $pay_info;
+    }
+
+
+    //获取转账信息
+    public function create_withdrawal($pay_arr)
+    {
+        $params['amount'] = intval($pay_arr['amount']*100); // 订单金额
+        $params['merchantOrderId'] = $pay_arr['order_sn']; // 商户订单号
+        $params['notifyUrl'] = $pay_arr['notify_url']; // 异步通知地址
+        $params['customerName'] = $pay_arr['account_name']; //姓名
+        $params['customerCert'] = $pay_arr['bank_number'];//cpf编码
+        $params['accountType'] = strtoupper($pay_arr['bankName']);//银行名称
+        $params['accountNum'] = strtoupper($pay_arr['bankName']) == 'PHONE' ? '+55'.$pay_arr['bank_number']:$pay_arr['bank_number']; //银行卡号
+        $params['merchantUserId'] = $pay_arr['user_id'];
+        $req = json_encode($params);
+        $header = array(
+            'Authorization:Basic ' . $this->gettoken(),
+            'Content-Type: application/json'
+        );
+        Log::write(['Submit_create', "CashPay", $params,$header], "withdrawal");
+        $res = PayRequest::curlS($this->pay_set['withdrawal_url'], $req, $header);
+        Log::write(['Return_withdrawal', "CashPay", $res], "withdrawal");
+        $res = json_decode($res, true);
+        if (empty($res) || $res['code'] != '200' || $res['status'] != '90') {
+            throw new \Exception("渠道返回:" . $res['msg'], 0);
+        }
+        return $res['orderId'] ??'';
+    }
+
+    private function gettoken(){
+        $str = $this->pay_set['appId'].':'.$this->pay_set['signKey'];
+        return base64_encode($str);
+    }
+
+    private function generateSign($data, $signKey)
+    {
+        unset($data["sign"]);
+        ksort($data);
+        $str = urldecode(http_build_query(myArrayFilter($data)));
+        $str .= '&key='.md5($signKey);
+        return md5($str);
+    }
+
+
+    //异步回调支付
+    public function notify($data)
+    {
+        $data = Request::param(false);
+        unset($data['channel'],$data['s']);
+        $sign = isset($data['sign']) ? $data['sign'] : '';
+        if ($data['code'] != '200' || $data['status'] != '01') {
+            return "faile";
+        }
+
+        $sign_str = $this->generateSign($data, $this->pay_set['signKey']);
+        if ($sign_str != $sign) {
+            return "sign error";
+        }
+        $rsps['order_sn'] = $data['merchantOrderId'];
+        $rsps['trade_sn'] = $data['orderId'];
+        $rsps['result'] = "success";
+        $rsps['money'] = isset($data['realPayAmount']) ? $data['realPayAmount'] / 100 : 0;
+        return $rsps;
+    }
+
+
+    //异步回调支付
+    public function notify_withdrawal($data)
+    {
+        $data = Request::param(false);
+        unset($data['channel'],$data['s']);
+        $sign = isset($data['sign']) ? $data['sign'] : '';
+        $rsps['status'] = 1;
+        if ($data['code'] != '200' || $data['status'] != '01') {
+            $rsps['status'] = 2;
+        }
+
+        $sign_str = $this->generateSign($data, $this->pay_set['signKey']);
+        if ($sign_str != $sign) {
+            $rsps['status'] = 2;
+        }
+
+        $rsps['order_sn'] = $data['merchantOrderId'];
+        $rsps['othr_number'] = $data['orderId'];
+        $rsps['msg'] = '';
+        $rsps['result'] = "success";
+        return $rsps;
+    }
+}

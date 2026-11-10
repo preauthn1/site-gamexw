@@ -1,0 +1,114 @@
+.warp {
+  background-color: var(--color1);
+}
+.user-box {
+  background-color: var(--color1);
+  border-radius: 0 0 5px 5px;
+  padding: 30px 26px;
+  display: flex;
+  align-items: center;
+  .md({
+    align-items: flex-start
+  });
+}
+.avatar {
+  .size(80px);
+  border: 2px solid var(--color4);
+  border-radius: 50%;
+  .md({
+    .size(100px);
+  });
+}
+.user-content-box {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  .md({
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 40px;
+  });
+}
+.user-content {
+  flex: 1;
+  margin: 0 25px;
+  font-size: 18px;
+  .md({
+    font-size: 20px;
+    margin: 0;
+    margin-bottom: 14px;
+  });
+}
+.user-title {
+  color: var(--color7);
+  margin-bottom: 6px;
+}
+
+.card-box {
+  background-color: var(--color1);
+  border-radius: 5px;
+  padding: 0 20px 33px;
+  margin-top: 15px;
+  overflow: hidden;
+  .md({
+    margin-top: 0;
+    border-top: 15px solid var(--color3);
+    border-radius:0;
+  });
+}
+.service-tabs {
+  --van-tabs-line-height: 62px !important;
+  :deep(.van-tabs__line) {
+    --van-tabs-bottom-bar-width: 249px !important;
+  }
+  :deep(.van-tab) {
+    min-width: 249px !important;
+  }
+  :deep(.van-tabs__wrap) {
+    padding: 0 !important;
+    margin-bottom: 24px !important;
+  }
+}
+.title-box {
+  display: flex;
+  align-items: center;
+}
+.title-icon {
+  font-size: 26px;
+  object-fit: contain;
+  margin-right: 8px;
+  .size(1em);
+}
+.service-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+  .md({
+    grid-template-columns: repeat(1, 1fr);
+  });
+}
+.service-item {
+  display: flex;
+  align-items: center;
+  background: var(--color9);
+  border-radius: 5px;
+  border: 1px solid var(--color5);
+  padding: 25px 30px;
+  .md({
+    font-size: 18px;
+  });
+}
+.service-item-icon {
+  font-size: 50px;
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+}
+.service-item-content {
+  flex: 1;
+  margin: 0 18px;
+}
+.item-desc {
+  color: var(--color7);
+  margin-top: 4px;
+}

@@ -1,0 +1,55 @@
+.tabbar-box {
+  height: var(--tabbar-height);
+}
+.tabbar-content {
+  height: var(--tabbar-height);
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--tabbar-bg);
+  border-radius: 15px 15px 0px 0px;
+  display: flex;
+  align-items: center;
+  z-index: 99;
+  box-shadow: 0px 0 9px 0px rgba(0, 0, 0, 0.5);
+}
+.tabbar-item {
+  flex: 1;
+  width: 0;
+  .flex-center();
+  padding: 0 14px;
+  flex-direction: column;
+  font-size: 22px;
+  &.active {
+    color: var(--color4);
+  }
+}
+.item-icon {
+  font-size: 50px;
+  margin-bottom: 8px;
+  &.animate {
+    animation: 0.5s icon;
+  }
+}
+@keyframes icon {
+  0% {
+    transform: scale(1);
+  }
+  33% {
+    transform: scale(0.2);
+  }
+  66% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.itme-name {
+  width: 100%;
+  .ellipsis();
+  text-align: center;
+}

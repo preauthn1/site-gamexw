@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+    <style type="text/css">
+         .m_l_5{
+            margin-top:10px;
+            margin-right: 40px;
+        }
+        .dis_count{
+            justify-content:flex-start;
+            flex-wrap:wrap;
+        }
+    </style>
+</head>
+<body>  
+
+<div style="text-align: right;">    
+    <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+        <i class="layui-icon">&#xe9aa;</i>
+    </button>	
+    
+</div>
+
+<form class="layui-form" id="excel" action="">
+<div class="demoTable" style="text-align: center;">
+    
+    {if condition="$uid == 0"}
+        <div class="layui-inline">
+            <input class="layui-input" id="username" name="username" placeholder="{:lang('用户名')}">
+        </div>
+    {/if}
+    
+    <div class="layui-inline">
+        <input class="layui-input" id="order_id" name="order_id" placeholder="{:lang('订单ID')}">
+    </div>
+    
+    <div class="layui-inline">
+        <input class="layui-input" id="order_sn" name="order_sn" placeholder="{:lang('订单号')}">
+    </div>
+    
+    <div class="layui-inline">
+      	<select id="status1" name="status1" class="inline">
+            <option value=""  selected="">{:lang('审核状态')}</option>
+            <option value="1">{:lang('待审核')}</option>
+            <option value="2">{:lang('未通过')}</option>
+            <option value="3">{:lang('已通过')}</option>
+      	</select>
+    </div>
+   
+    <div class="layui-inline">
+        <input class="layui-input" id="date" name="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">
+    </div>
+    
+    <div class="layui-inline">
+        <input class="layui-input" id="min_price" name="min_price" placeholder="{:lang('最小金额')}">
+    </div>
+    
+    <div class="layui-inline">
+        <input class="layui-input" id="max_price" name="max_price" placeholder="{:lang('最大金额')}">
+    </div>
+    
+    <div class="layui-inline">
+        <select id="time_type" name="time_type" class="inline">
+            <option value=""  >{:lang('选择时间类型')}</option>
+            <option value="1" selected="">{:lang('下单时间')}</option>
+            <option value="2">{:lang('审核时间')}</option>
+        </select>
+    </div>
+    
+    <div class="layui-inline">
+      	<select id="channel" name="channel" class="inline">
+            <option value=""  selected="">{:lang('数据来源')}</option>
+            <?php foreach($channel as $k => $v){?>
+                <option value="{$k}">{:lang($v)}</option>
+            <?php }?>
+      	</select>
+    </div>
+    
+    <div class="layui-inline">
+      	<select id="recharge_type" name="recharge_type" class="inline">
+            <option value=""  selected="">{:lang('充值类型')}</option>
+            <option value="1">{:lang('首充')}</option>
+            <option value="2">{:lang('复充')}</option>
+      	</select>
+    </div>
+    
+    <button class="layui-btn" data-type="reload" type="button">{:lang('搜索')}</button>    
+</div>
+</form>
+<div  style="margin-top:8px">
+    
+    <div class="dis dis_count">
+        {if condition="isset($channel[0]) or isset($channel[1])"}
+            <div class="dis m_l_5">
+                <div>
+                    {:lang('银行卡')}：
+                </div>
+                <div>
+                    <a class="layui-btn layui-btn-sm layui-btn-warm">
+                        {:lang('待审核')} 
+                        <span class="b_stay">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-danger">
+                        {:lang('未通过')} 
+                        <span class="b_no">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-normal">
+                        {:lang('已通过')} 
+                        <span class="b_yes">0.00</span>
+                    </a>
+                </div>
+            </div>
+        {/if}
+        {if condition="isset($channel[2]) or isset($channel[3])"}
+            <div class="dis m_l_5">
+                <div>
+                    USDT :
+                </div>
+                <div>
+                    <a class="layui-btn layui-btn-sm layui-btn-warm">
+                        {:lang('待审核')} 
+                        <span class="u_stay">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-danger">
+                        {:lang('未通过')} 
+                        <span class="u_no">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-normal">
+                        {:lang('已通过')} 
+                        <span class="u_yes">0.00</span>
+                    </a>
+                </div>
+            </div>
+        {/if}
+        {if condition="isset($channel[4])"}
+            <div class="dis m_l_5">
+                <div>
+                    {:lang('电子钱包')}：
+                </div>
+                 <div>
+                    <a class="layui-btn layui-btn-sm layui-btn-warm">
+                        {:lang('待审核')} 
+                        <span class="w_stay">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-danger">
+                        {:lang('未通过')} 
+                        <span class="w_no">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-normal">
+                        {:lang('已通过')} 
+                        <span class="w_yes">0.00</span>
+                    </a>
+                </div>
+            </div>
+        {/if}
+
+        {if condition="isset($channel[6])"}
+            <div class="dis m_l_5">
+                <div>
+                    PIX：
+                </div>
+                 <div>
+                    <a class="layui-btn layui-btn-sm layui-btn-warm">
+                        {:lang('待审核')} 
+                        <span class="p_stay">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-danger">
+                        {:lang('未通过')} 
+                        <span class="p_no">0.00</span>
+                    </a>
+                    <a class="layui-btn layui-btn-sm layui-btn-normal">
+                        {:lang('已通过')} 
+                        <span class="p_yes">0.00</span>
+                    </a>
+                </div>
+            </div>
+        {/if}
+    </div>
+</div>
+
+<table class="layui-hide" id="table" lay-filter="table"></table> 
+
+<script type="text/html" id="admin_name">
+  {{# if (d.status == 1) { }}
+    {:lang('未处理')}
+  {{# } else { }}
+    {{ d.admin_name}}
+  {{# } }}
+</script>
+
+<script type="text/html" id="status">
+    {{# if (d.status == 1) { }}
+        <a class="layui-btn layui-btn-xs layui-btn-warm">{:lang('待审核')}</a>
+    {{# } else if (d.status == 2){ }}  
+        <a class="layui-btn layui-btn-xs layui-btn-danger">{:lang('未通过')}</a>
+    {{# } else { }}
+        <a class="layui-btn layui-btn-xs layui-btn-normal">{:lang('已通过')}</a>
+    {{# } }}
+</script>
+
+{include file="public/botton" /}
+<script>
+layui.use(['table','laydate','jquery'], function(){
+    $ = layui.jquery;
+  var table = layui.table;
+  var laydate = layui.laydate;
+  let tableInit = table.render({
+  	elem: '#table',
+    url:'/user_offline/get_user_data?select=true&uid='+{$uid},
+  	response:{
+	    statusCode: 1 //规定成功的状态码，默认：0
+	},
+    text: {
+        none: '{:lang('暂无数据')}' //默认：无数据。
+    },
+	page: true,
+    parseData: function(res){ //res 即为原始返回的数据
+        return {
+          "code": res.code, //解析接口状态
+          "msg": res.msg, //解析提示文本
+          "count": res.data.total, //解析数据长度
+          "data": res.data.data //解析数据列表
+        };
+    },
+    limits:[10,20,30,40,50],
+    cols: [[
+        {field:"id", title: "{:lang('订单ID')}"},
+        {field:"channel_name", title: "{:lang('数据来源')}"},
+        {field:"username", title: "{:lang('用户名')}"},
+        {field:"order_sn", title: "{:lang('订单号')}"},
+        {field:"add_time", title: "{:lang('申请时间')}",sort:true},
+        {field:"apply_price", title: "{:lang('申请金额')}",sort:true},
+        {field:"arrival_price", title: "{:lang('到账金额')}"},
+        {field:"credentials", title: "{:lang('充值凭证')}",templet:function(r){
+            return `<img width="60" class="off_img" data-src="`+r.credentials+`" src="`+r.credentials+`"></img>`
+        }},
+        {field:"status", title: "{:lang('状态')}",templet:"  #status"},
+        {field:"update_time", title: "{:lang('审核时间')}",sort:true},
+        {field:"pay_name", title: "{:lang('支付渠道')}"},
+    ]]
+  });
+
+     window.table_render = function(){
+        layer.closeAll()
+        table.reload('table', {}); //只重载数据  
+     }
+
+    // 监听排序
+    table.on('sort(table)', function(obj){  
+        table.reload('table', {
+            initSort: obj,
+            where: {
+                field: obj.field,
+                order: obj.type
+            }
+        });
+    });
+
+
+  //监听工具条
+  table.on('tool(table)', function(obj){
+    var data = obj.data;
+    var url="";
+    
+    if(obj.event == 'base'){
+      url='/user/base?id='+data.uid;
+    }
+    layer.open({
+        type: 2,
+        title: "{:lang('编辑')}",
+        shadeClose: true,
+        shade: 0.8,
+        area: ['90%', '90%'],
+        content: url //iframe的url
+    });
+  });
+  
+  var $ = layui.$, active = {
+    reload: function(){
+        //执行重载
+        get_data()
+    },
+    
+  };
+  
+  $('.demoTable .layui-btn').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+
+     get_count()
+
+     function get_data(){
+        //执行重载
+        table.reload('table', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },
+            where:get_param()
+        }, 'data');
+        get_count()
+    }
+});
+
+laydate.render({
+    elem: '#date',
+    type: 'date',
+    range: true,
+    lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',},
+    extrabtns: [
+        {id: 'today', text: '{:lang('今天')}', range: [new Date(), new Date()]},
+        {id: 'yesterday', text: '{:lang('昨天')}', range: [new Date(new Date().setDate(new Date().getDate()-1)), new Date(new Date().setDate(new Date().getDate()-1))]},
+        {id: 'lastday-7', text: '{:lang('近7天')}', range: [new Date(new Date().setDate(new Date().getDate()-7)), new Date(new Date().setDate(new Date().getDate()-1))]},
+        {id: 'lastday-30', text: '{:lang('近30天')}', range: [new Date(new Date().setDate(new Date().getDate()-30)), new Date(new Date().setDate(new Date().getDate()-1))]},
+        {id: 'thismonth', text: '{:lang('本月')}', range: [new Date(new Date().setDate(1)),new Date(new Date(new Date().setMonth(new Date().getMonth()+1)).setDate(0))]},
+        {id: 'lastmonth', text: '{:lang('上月')}', range: [new Date(new Date(new Date().setMonth(new Date().getMonth()-1)).setDate(1)),new Date(new Date().setDate(0))]}
+    ],
+    done: function(val, stdate, ovdate){
+        //当确认选择时间后调用这里
+    }
+});
+
+
+function get_param(){
+        let param = {}
+        param.username = $('#username').val();
+        param.apply_price = $('#apply_price').val();
+        param.order_sn = $('#order_sn').val();
+        param.agent_name = $('#agent_name').val();
+        param.date = $('#date').val();
+        param.status = $('#status1').val();
+        param.channel = $('#channel').val();
+        param.bankcrad = $('#bankcrad').val();
+        param.lebal = $('#lebals').val();
+        param.time_type = $('#time_type').val();
+        param.pay_type = $('#pay_type').val();
+        param.recharge_type = $('#recharge_type').val();
+        param.order_id = $('#order_id').val();
+        param.set_content = $('#set_content').val();
+        param.min_price = $('#min_price').val();
+        param.max_price = $('#max_price').val();
+        return param
+}    
+
+    function get_count() {
+            adminRequest('{:url("/user_offline/get_count")}?uid='+{$uid},get_param()).then(function (res) { 
+                if(res.data.code == 1){
+                    $('.u_stay').text(res.data.data.usdt.stay)
+                    $('.u_no').text(res.data.data.usdt.no)
+                    $('.u_yes').text(res.data.data.usdt.yes)
+
+                    $('.b_stay').text(res.data.data.bank.stay)
+                    $('.b_no').text(res.data.data.bank.no)
+                    $('.b_yes').text(res.data.data.bank.yes)
+
+                    $('.w_stay').text(res.data.data.wallet.stay)
+                    $('.w_no').text(res.data.data.wallet.no)
+                    $('.w_yes').text(res.data.data.wallet.yes)
+
+                    $('.p_stay').text(res.data.data.pix.stay)
+                    $('.p_no').text(res.data.data.pix.no)
+                    $('.p_yes').text(res.data.data.pix.yes)
+
+                }
+            });
+        }
+        
+$('body').on('click','.off_img',function(){
+    let src = $(this).data('src')
+    layer.photos({
+         photos: { "data": [{"src": src}]}
+         ,shade:0.3
+        ,anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+  });
+})
+</script>
+
+</body>

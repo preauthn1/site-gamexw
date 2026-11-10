@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <title>websocket消息测试</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+  <script>
+    function subdata() {
+      $.ajax({
+        url: "",
+        data: $("#msgform").serializeArray(),
+        type: "POST",
+        dataType: "json",
+        success: function (res) {
+          layer.msg(res.msg)
+        }
+      });
+      return false;
+    }
+    function rand() {
+      var msgs = ["你今天吃了早餐吗？",
+        "明天开会的时间改到下午2点了。",
+        "请记得明天提交报告。",
+        "祝你生日快乐！",
+        "你今天穿的衣服很漂亮。",
+        "你能明天早上帮我参观一下公司吗？",
+        "我们需要你的签名确认文件。",
+        "我们的会议推迟到下周了。",
+        "请确认你是否能参加明天的晚宴。",
+        "谢谢你的帮助，我很感激。",]
+
+      let randomIndex = Math.floor(Math.random() * msgs.length);
+      $("#content").val(msgs[randomIndex]);
+    }
+  </script>
+</head>
+<body class="bg-light">
+<div class="container">
+  <div class="py-5 text-center">
+    <div class="d-block mx-auto mb-4">
+      <i class="fab fa-weixin" style="font-size:72px; color: #1AAD19;"></i>
+    </div>
+    <h2>发送实时消息</h2>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 order-md-1">
+      <form class="needs-validation" method="post" id="msgform" onsubmit="return subdata()">
+        <div class="mb-3">
+          <label for="uid">uid</label>
+            <input type="text" class="form-control" id="uid" name="uid" placeholder="用户ID" required>
+            <p class="form-text">填all时，同时给所有用户发消息</p>
+        </div>
+        <div class="mb-3">
+          <label for="msgtype">消息类型</label>
+          <div class="input-group">
+            <select name="msgtype" id="msgtype" class="form-control">
+              <option value="pop">弹窗消息</option>
+              <option value="toast">提示消息</option>
+              <option value="recharge">充值消息</option>
+              <option value="withdraw">提现消息</option>
+              <option value="action">活动消息</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="title">消息标题</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="title" name="title" placeholder="消息标题" value="通知">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="content">消息内容</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="content" name="content" placeholder="消息内容" required>
+            <button class="btn btn-primary" type="button" onclick="rand()">随机生成</button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="amount">金额</label>
+          <input type="text" class="form-control" id="amount" name="amount" placeholder="金额">
+          <p class="form-text">充值，活动消息到金额</p>
+          <p class="form-text">提现消息时，金额为提现状态，3为失败，2为成功</p>
+        </div>
+        <div class="mb-3">
+          <label for="time">消息显示几秒</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="time" name="time" value="3">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="time">失败重发分钟（0不重发）</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="rest_time" name="rest_time" value="0">
+          </div>
+        </div>
+        <hr class="mb-4">
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-primary btn-block" type="submit" id="submit">发送</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

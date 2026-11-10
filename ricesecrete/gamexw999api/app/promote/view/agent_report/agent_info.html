@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{:lang('代理报表')}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    {include file="public/header" /}
+</head>
+<body>
+<div style="text-align: right;">
+    <button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">
+        <i class="layui-icon">&#xe9aa;</i>
+    </button>
+</div>
+
+<!--<div class="layui-row layui-col-space15">-->
+    <!--<div class="layui-col-md6">-->
+        <!--<a class="layui-btn layui-btn-sm layui-btn-danger" lay-event="reject">{:lang('今日')}</a>-->
+        <!--<a class="layui-btn layui-btn-xs" lay-event="reject">{:lang('昨日')}</a>-->
+        <!--<a class="layui-btn layui-btn-xs" lay-event="reject">{:lang('本周')}</a>-->
+        <!--<a class="layui-btn layui-btn-xs" lay-event="reject">{:lang('上周')}</a>-->
+        <!--<a class="layui-btn layui-btn-xs" lay-event="reject">{:lang('本月')}</a>-->
+        <!--<a class="layui-btn layui-btn-xs" lay-event="reject">{:lang('上月')}</a>-->
+    <!--</div>-->
+    <!--<div class="layui-col-md6" style="text-align: right">-->
+        <!--<button type="button" class="layui-btn layui-btn-xs" onclick="location.reload();">-->
+            <!--<i class="layui-icon">&#xe9aa;</i>-->
+        <!--</button>-->
+    <!--</div>-->
+<!--</div>-->
+<hr>
+<div class="demoTable">
+    <form class="layui-form">
+        <!--<div class="layui-inline">-->
+            <!--<input class="layui-input" id="username" placeholder="{:lang('用户名')}">-->
+        <!--</div>-->
+        <!--<div class="layui-inline">-->
+            <!--<input class="layui-input" id="rec_code" placeholder="{:lang('推广码')}">-->
+        <!--</div>-->
+        <!--<div class="layui-inline">-->
+            <!--<input class="layui-input" id="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">-->
+        <!--</div>-->
+        <!--<div class="layui-inline">-->
+            <!--<select id="lebal" class="inline">-->
+                <!--<option value="">全部</option>-->
+                <!--<option value="1">{:lang('一般用户')}</option>-->
+                <!--<option value="2">{:lang('测试用户')}</option>-->
+            <!--</select>-->
+        <!--</div>-->
+
+        <!--<div class="layui-inline">-->
+            <!--<select id="status" class="inline">-->
+                <!--<option value="">全部</option>-->
+                <!--<option value="0">{:lang('启用')}</option>-->
+                <!--<option value="1">{:lang('关闭')}</option>-->
+            <!--</select>-->
+        <!--</div>-->
+        <!--<button class="layui-btn" data-type="reload" type="button">{:lang('搜索')}</button>-->
+        <!--<button class="layui-btn layui-btn-danger" data-type="reset">{:lang('重置')}</button>-->
+        <button class="layui-btn" data-type="come_back" type="button">{:lang('返回列表')}</button>
+    </form>
+</div>
+<hr>
+<fieldset class="layui-elem-field">
+    <legend>{:lang('统计结果')}</legend>
+    <div class="layui-field-box">
+        <div class="layui-row layui-col-space3">
+            <div class="layui-col-md2">{:lang('总代理用户名')}：{$data_count.username}</div>
+            <div class="layui-col-md2">{:lang('总代理推广码')}：{$data_count.rec_code}</div>
+            <!--<div class="layui-col-md2">下层级别：0</div>-->
+        </div>
+    </div>
+    <div class="layui-field-box">
+        <div class="layui-row layui-col-space3">
+            <div class="layui-col-md2">{:lang('下线总人数')}：{$data_count.rec_num}</div>
+            <div class="layui-col-md2">{:lang('充值人数')}：{$data_count.first_recharge_num}</div>
+            <div class="layui-col-md2">{:lang('首冲人数')}：{$data_count.first_recharge_num}</div>
+            <div class="layui-col-md2">{:lang('复冲人数')}：{$data_count.succeeding_recharge_num}</div>
+        </div>
+    </div>
+    <div class="layui-field-box">
+        <div class="layui-row layui-col-space3">
+            <div class="layui-col-md2">{:lang('新注册人数')}：{$data_count.new_reg_num}</div>
+            <div class="layui-col-md2">{:lang('充值金额')}：{$data_count.recharge_money}</div>
+            <div class="layui-col-md2">{:lang('首冲人数占比')}：{$data_count.first_recharge_num_percentage}</div>
+            <div class="layui-col-md2">{:lang('复冲人数占比')}：{$data_count.succeeding_recharge_num_percentage}</div>
+        </div>
+    </div>
+</fieldset>
+<table class="layui-hide" id="table" lay-filter="table"></table>
+
+<script type="text/html" id="ustatus">
+    {{# if (d.ustatus == 0) { }}
+    <span style="color: #d58512">{:lang('启用')}</span>
+    {{# } else if(d.ustatus == 1) { }}
+    <span style="color: #00A600">{:lang('关闭')}</span>
+
+    {{# } }}
+</script>
+
+<script type="text/html" id="lebal_s">
+    {{# if (d.lebal == 1) { }}
+    <span>{:lang('一般用户')}</span>
+    {{# } else if(d.lebal == 2) { }}
+    <span>{:lang('测试用户')}</span>
+    {{# } }}
+</script>
+<script type="text/html" id="add_time">
+    {{ timestampToTime(d.add_time) }}
+</script>
+
+{include file="public/botton" /}
+<script>
+    layui.use(['table','laydate','form'], function(){
+        var table = layui.table;
+        var laydate = layui.laydate;
+        var form = layui.form;
+        table.render({
+            elem: '#table',
+            url:'/agent_report/agent_info?select=true&uid={$uid}',
+            response:{
+                statusCode: 1 //规定成功的状态码，默认：0
+            },
+            text: {
+                none: '{:lang('暂无数据')}' //默认：无数据。
+            },
+            page: true,
+limits:[10,20,30,40,50,60,70,80,90,500,1000],
+            cols: [[
+                {field:"username", title: "{:lang('用户名')}"},
+                {field:"water_balance", title: "{:lang('充值金额')}"},
+                {field:"withdrawal_balance", title: "{:lang('提现金额')}"},
+                {field:"zd_price", title: "{:lang('投注金额')}"},
+                {field:"zd_number", title: "{:lang('投注笔数')}"},
+                {field:"win_price", title: "{:lang('会员总输')}"},
+                {field:"lose_price", title: "{:lang('会员总赢')}"},
+                {field:"winlose_price", title: "{:lang('会员输赢')}"},
+                {field:"add_time", title: "{:lang('注册时间')}",templet:"#add_time"}
+            ]]
+        });
+        //日期时间范围
+        laydate.render({
+            elem: '#date'
+            ,type: 'datetime'
+            ,range: true
+            ,lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',}
+        });
+        //监听工具条
+        table.on('tool(table)', function(obj){
+            var data = obj.data;
+            var url="";
+
+        });
+
+        var $ = layui.$, active = {
+            reload: function(){
+                var username = $('#username').val();
+                var date = $('#date').val();
+                var lebal = $('#lebal').val();
+                var status = $('#status').val();
+                var rec_code =$('#rec_code').val();
+                //执行重载
+                table.reload('table', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    where: {
+                        username: username,
+                        date: date,
+                        lebal: lebal,
+                        status:status,
+                        rec_code: rec_code
+                    }
+                }, 'data');
+            },
+            reset: function(){
+                location.reload();
+            },
+            come_back: function(){
+                window.history.go(-1);
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+    });
+</script>
+
+</body>
+</html>

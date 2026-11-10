@@ -1,0 +1,38 @@
+.download-box {
+  height: var(--downLoad-height);
+  background: var(--color10);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px 8px 20px;
+  .md({
+    position: sticky;
+    top: 0;
+    z-index: 110;
+  });
+}
+.close-box {
+  border-right: 2px solid var(--color9);
+  padding-right: 20px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  margin-right: 17px;
+}
+.close-icon {
+  font-size: 19px;
+  color: var(--color9);
+  cursor: pointer;
+}
+.logo {
+  .size(45px);
+  border-radius: 5px;
+  margin-right: 16px;
+  object-fit: contain;
+}
+.desc {
+  color: var(--color7);
+  flex: 1;
+  margin-right: 17px;
+  .ellipsis();
+}

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{:lang('反波胆平台')}</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  {include file="public/header" /}
+</head>
+<body>  
+
+<div class="layui-form" style="margin-top: 20px;" id="apps">
+	<div class="layui-tab">
+        <ul class="layui-tab-title">
+          <li class="layui-this">{:lang('代理报表')}</li>
+          <li >{:lang('下层列表')}</li>
+        </ul>
+        <div class="layui-tab-content">
+          	<div class="layui-tab-item layui-show">
+			    <div class="demoTable" style="text-align: center;">
+			      	<div class="layui-btn-group">
+				        <button type="button" 
+				        :class="{'layui-btn layui-btn-sm':true,'layui-btn-primary':query.s_date!='{:lang('今日')}','layui-btn-normal':query.s_date=='{:lang('今日')}'}" 
+				        @click="select_date('{:lang('今日')}')">{:lang('今日')}</button>
+				        <button type="button" 
+				        :class="{'layui-btn layui-btn-sm':true,'layui-btn-primary':query.s_date!='{:lang('昨日')}','layui-btn-normal':query.s_date=='{:lang('昨日')}'}" 
+				        @click="select_date('{:lang('昨日')}')">{:lang('昨日')}</button>
+				        <button type="button" 
+				        :class="{'layui-btn layui-btn-sm':true,'layui-btn-primary':query.s_date!='{:lang('本周')}','layui-btn-normal':query.s_date=='{:lang('本周')}'}" 
+				        @click="select_date('{:lang('本周')}')">{:lang('本周')}</button>
+				        <button type="button" 
+				        :class="{'layui-btn layui-btn-sm':true,'layui-btn-primary':query.s_date!='{:lang('上周')}','layui-btn-normal':query.s_date=='{:lang('上周')}'}" 
+				        @click="select_date('{:lang('上周')}')">{:lang('上周')}</button>
+				        <button type="button" 
+				        :class="{'layui-btn layui-btn-sm':true,'layui-btn-primary':query.s_date!='{:lang('本月')}','layui-btn-normal':query.s_date=='{:lang('本月')}'}" 
+				        @click="select_date('{:lang('本月')}')">{:lang('本月')}</button>
+				        <button type="button" 
+				        :class="{'layui-btn layui-btn-sm':true,'layui-btn-primary':query.s_date!='{:lang('上月')}','layui-btn-normal':query.s_date=='{:lang('上月')}'}" 
+				        @click="select_date('{:lang('上月')}')">{:lang('上月')}</button>
+			      	</div>
+			      	<div class="layui-inline">
+			          <input class="layui-input" id="date" placeholder="{:lang('开始时间')}-{:lang('结束时间')}">
+			      	</div>
+			      	<div class="layui-inline">
+					    <input class="layui-input" v-model="query.username" placeholder="{:lang('用户名')}">
+					</div>
+					<div class="layui-inline">
+					    <input class="layui-input" v-model="query.rec_code" placeholder="{:lang('推广码')}">
+					</div>
+					<div class="layui-inline">
+				          <select id="rec_level" class="layui-select">
+				              	<option value=""  selected="">{:session('lang_data.public.layer_level')}</option>
+				              	{for start="0" end="$level"}
+									<option value="{$i+1}">{$i+1}</option>
+							  	{/for}
+				          </select>
+				    </div>
+			      	<button class="layui-btn" @click="submitData">{:lang('搜索')}</button>
+			    </div>
+
+			    <div class="tjData">
+				    <div class="tjData-header">
+				      	<div class="tjData-header-item">
+				      		<div class="tjData-header-item-title">{:lang('总')}{:lang('余额')}</div>
+				      		<div class="tjData-header-item-value">{{searchData.count_balance}}</div>
+				      	</div>
+				      	<div class="tjData-header-item">
+				      		<div class="tjData-header-item-title">{:session('lang_data.public.b_level_p')}</div>
+				      		<div class="tjData-header-item-value">{{searchData.count_pnumber}}</div>
+				      	</div>
+				      	<div class="tjData-header-item">
+				      		<div class="tjData-header-item-title">{:lang('今日')}{:session('lang_data.public.reg_number')}</div>
+				      		<div class="tjData-header-item-value">{{searchData.reg_number}}</div>
+				      	</div>
+				    </div>
+
+				    <div class="tjData-count">
+				    	<table class="layui-table">
+				              <thead>
+				                <tr>
+				                  <th>{:session('lang_data.public.tz_number')}</th>
+				                  <th>{:lang('投注金额')}</th>
+				                  <th>{:session('lang_data.public.sc_number')}</th>
+				                  <th>{:lang('首充')}{:lang('比例')}</th>
+				                  <th>{:lang('复充')}{:session('lang_data.public.p_number')}</th>
+				                  <th>{:lang('复充')}{:lang('比例')}</th>
+				                </tr> 
+				              </thead>
+				              <tbody>
+				                <tr>
+				                  <td>{{searchData.tz_number}}</td>
+				                  <td>{{searchData.tz_price}}</td>
+				                  <td>{{searchData.sc_pnumber}}</td>
+				                  <td>{{searchData.sc_bfb}}%</td>
+				                  <td>{{searchData.fc_pnumber}}</td>
+				                  <td>{{searchData.fc_bfb}}%</td>
+				                </tr>
+				              </tbody>
+				        </table>
+				    </div>
+				    <div class="tjData-count">
+				        <table class="layui-table">
+				              <thead>
+				                <tr>
+				                  <th>{:lang('线下')}{:lang('充值')}{:session('lang_data.public.p_number')}</th>
+				                  <th>{:lang('线下')}{:lang('充值')}{:lang('总')}{:lang('金额')}
+				                  </th>
+				                  <th>{:lang('线上')}{:lang('充值')}{:session('lang_data.public.p_number')}</th>
+				                  <th>{:lang('线上')}{:lang('充值')}{:lang('总')}{:lang('金额')}
+				                  </th>
+				                  <th>{:lang('线下')}{:lang('提现')}{:session('lang_data.public.p_number')}</th>
+				                  <th>{:lang('线下')}{:lang('提现')}{:lang('金额')}</th>
+				                  <th>{:lang('线上')}{:lang('提现')}{:session('lang_data.public.p_number')}</th>
+				                  <th>{:lang('线上')}{:lang('提现')}{:lang('金额')}</th>
+				                </tr> 
+				              </thead>
+				              <tbody>
+				                <tr>
+				                  <td>{{searchData.off_cz_pnumber}}</td>
+				                  <td>{{searchData.off_cz_price}}</td>
+				                  <td>{{searchData.ol_cz_pnumber}}</td>
+				                  <td>{{searchData.ol_cz_price}}</td>
+				                  <td>{{searchData.off_tpnumber}}</td>
+				                  <td>{{searchData.off_tprice}}</td>
+				                  <td>{{searchData.ol_tpnumber}}</td>
+				                  <td>{{searchData.ol_tprice}}</td>
+				                </tr>
+				              </tbody>
+				        </table>
+				    </div>
+			    </div> 
+          	</div>
+          	<div class="layui-tab-item">
+          		<div class="demoTable" style="text-align: center;">
+          			<div class="layui-inline">
+					    <input class="layui-input" id="username" placeholder="{:lang('用户名')}">
+					</div>
+					<div class="layui-inline">
+				          <select id="field" class="layui-select">
+				              	<!-- <option value="username">{:lang('用户名')}</option> -->
+				              	<option value="rec_level">{:session('lang_data.public.layer_level')}</option>
+				              	<option value="balance">{:lang('余额')}</option>
+				              	<option value="sc_balance">{:lang('首充')}</option>
+				              	<option value="xc_balance">{:lang('复充')}</option>
+				              	<option value="zd_price">{:lang('注单金额')}</option>
+				              	<option value="zd_number">{:lang('注单数')}</option>
+				              	<option value="win_price">{:lang('总')}{:lang('赢')}</option>
+				              	<option value="lose_price">{:lang('总')}{:lang('输')}</option>
+				          </select>
+				    </div>
+					<div class="layui-inline">
+				          <select id="orderby" class="layui-select">
+				              	<option value="desc">{:session('lang_data.public.desc')}</option>
+				              	<option value="asc">{:session('lang_data.public.asc')}</option>
+				          </select>
+				    </div>
+			      	<button class="layui-btn" data-type="reload">{:lang('搜索')}</button>
+			    </div>
+			    <table class="layui-hide" id="table" lay-filter="table"></table>
+          	</div>
+        </div>
+    </div>
+
+</div>
+<style type="text/css">
+	.tjData{
+		padding: 20px;
+		margin-top: 30px;
+		border: 1px solid #efefef;
+	}
+	.tjData-header{
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+	}
+	.tjData-header-item{
+		margin: 0 10px;
+	}
+	.tjData-header-item-title{
+		font-size: 20px;
+	}
+	.tjData-header-item-value{
+		margin-top: 5px;
+		text-align: center;
+	}
+	.tjData-count{
+		border-top: 1px solid #efefef;
+		padding: 20px;
+		margin-top: 20px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+	.tjData-count-item{
+		width: 30%;
+	}
+</style>
+{include file="public/botton" /}
+<script src="/static/admin/js/echarts.js"></script>
+<script>
+
+    var vm = new Vue({
+        el: '#apps',
+        data: {
+            query:{
+                s_date:"",
+              	username:"",
+              	rec_code:"",
+              	date:"",
+              	rec_level:"",
+            },
+            searchData:{
+                
+            }
+        },
+        mounted(){
+          this.init();
+        },
+        methods:{
+            init: function() {
+            	var _this=this;
+                layui.use(['form','laydate','element','table'], function(){
+                    _this.form = layui.form;
+                    _this.laydate = layui.laydate;
+                    _this.$=layui.$;
+                    _this.table = layui.table;
+                    _this.laydate.render({
+                        elem: '#date'
+                        ,type: 'datetime'
+                        ,range: true
+                        text: {
+					        none: '{:lang('暂无数据')}' //默认：无数据。
+					    },
+                        ,lang_text:{'select_time':'{:lang('选择时间')}','start_time':'{:lang('开始时间')}','end_time':'{:lang('结束时间')}','return_date':'{:lang('返回日期')}','confirm':'{:lang('确定')}','clear':'{:lang('清空')}','now':'{:lang('现在')}','year':'{:lang('年')}','month':'{:lang('月')}','one':'{:lang('一')}','two':'{:lang('二')}','three':'{:lang('三')}','four':'{:lang('四')}','five':'{:lang('五')}','six':'{:lang('六')}','seven':'{:lang('日')}','time':'{:lang('时')}','min':'{:lang('分')}','second':'{:lang('秒')}',}
+                    });
+                    _this.table.render({
+					  	elem: '#table',
+					    url:'/agent_report/list?level=true',
+					  	response:{
+						    statusCode: 1 //规定成功的状态码，默认：0
+						},
+						page: true,
+limits:[10,20,30,40,50,60,70,80,90,500,1000],
+					    cols: [[
+					      {field:"id", title: "ID"},
+					      {field:"username", title: "{:lang('用户名')}"},
+					      {field:"rec_level", title: "{:session('lang_data.public.layer_level')}"},
+					      {field:"rec_code", title: "{:lang('推广码')}"},
+					      {field:"rec_name", title: "{:lang('推广')}{:lang('用户')}"},
+      					  {field:"balance", title: "{:lang('余额')}"},
+					      {field:"sc_balance", title: "{:lang('首充')}"},
+					      {field:"xc_balance", title: "{:lang('复充')}"},
+					      {field:"zd_price", title: "{:lang('注单金额')}"},
+					      {field:"zd_number", title: "{:lang('注单数')}"},
+					      {field:"win_price", title: "{:lang('总')}{:lang('赢')}"},
+					      {field:"lose_price", title: "{:lang('总')}{:lang('输')}"},
+					      {field:"phone_status", title: "{:lang('手机')}{:lang('状态')}",templet:function(d){
+					      		if (d.phone_status==1) {
+					      			return "{:lang('已通过')}";
+					      		}else{
+					      			return "{:lang('未通过')}";
+					      		}
+					      }},
+					      {field:"add_time", title: "{:lang('注册')}{:lang('时间')}"},
+					    ]]
+					});
+					var active = {
+					    reload: function(){
+					      var orderby = _this.$('#orderby').val();
+					      var username = _this.$('#username').val();
+					      var field = _this.$('#field').val();
+					      //执行重载
+					      _this.table.reload('table', {
+					        page: {
+					          curr: 1 //重新从第 1 页开始
+					        },
+					        where: {
+					          orderby: orderby,
+					          username: username,
+					          field:field,
+					        }
+					      }, 'data');
+					    }
+					};
+					_this.$('.demoTable .layui-btn').on('click', function(){
+					    var type = _this.$(this).data('type');
+					    active[type] ? active[type].call(this) : '';
+					});
+          			_this.submitData();
+            	});
+            },
+          	select_date(v){
+	            if (this.query.s_date==v) {
+	              	this.query.s_date='';
+	            }else{
+	              	this.query.s_date=v;
+	            }
+          	},
+          	submitData(){
+	            var _this=this;
+	            this.query.date=this.$("#date").val();
+	            this.query.rec_level=this.$("#rec_level").val();
+	            adminRequest('/agent_report/list',{search:true,info:this.query}).then(function (response) { 
+	                if (response.data.code==1) {
+	                	_this.searchData=response.data.data
+	                }else{
+	                	_this.searchData={
+			                count_balance: 0,
+							count_pnumber: 0,
+							cz_pnumber: 0,
+							cz_price: 0,
+							fc_bfb: 0,
+							fc_pnumber: 0,
+							reg_number: 0,
+							sc_bfb: 0,
+							sc_pnumber: 0,
+							tx_pnumber: 0,
+							tx_price: 0,
+							tz_number: 0,
+							tz_price: 0,
+			            };
+	                	layer.msg(response.data.msg);
+	                }
+	            });
+          	}
+      }
+  })
+
+</script>
+</body>
+</html>
